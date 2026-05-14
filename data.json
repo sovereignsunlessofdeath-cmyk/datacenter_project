@@ -1,0 +1,24 @@
+{
+    "staff": [
+        "Damilare"
+    ],
+    "menu": [
+        "Rice"
+    ],
+    "orders": {
+        "2026-05-14": [
+            {
+                "name": "Damilare",
+                "food": "Rice"
+            }
+        ]
+    },
+    "tickets": [],
+    "ticket_categories": [
+        "Network Issue",
+        "Hardware Problem",
+        "Software Bug",
+        "Password Reset",
+        "Other"
+    ]
+}

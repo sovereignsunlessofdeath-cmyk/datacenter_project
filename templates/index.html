@@ -1,0 +1,92 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="UTF-8">
+    <title>Data Centre Management System</title>
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body { 
+            font-family: Segoe UI, Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, rgb(30, 60, 114) 0%, rgb(42, 82, 152) 100%);
+            min-height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            padding: 20px;
+        }
+        .container { max-width: 700px; width: 100%; }
+        .card { 
+            background: white; 
+            padding: 50px; 
+            border-radius: 15px; 
+            box-shadow: 0 15px 40px rgba(0,0,0,0.3);
+            text-align: center;
+        }
+        h1 { 
+            color: rgb(102, 126, 234);
+            margin-bottom: 15px;
+            font-size: 32px;
+        }
+        .subtitle {
+            color: rgb(100, 100, 100);
+            margin-bottom: 40px;
+            font-size: 16px;
+            line-height: 1.6;
+        }
+        .buttons { 
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 20px;
+            margin-top: 30px;
+        }
+        a { 
+            padding: 20px;
+            border-radius: 10px;
+            text-decoration: none;
+            font-weight: 600;
+            font-size: 16px;
+            transition: all 0.3s ease;
+            display: block;
+        }
+        .btn-admin { 
+            background: linear-gradient(135deg, rgb(102, 126, 234) 0%, rgb(118, 75, 162) 100%);
+            color: white;
+        }
+        .btn-admin:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 10px 25px rgba(102, 126, 234, 0.4);
+        }
+        .btn-staff { 
+            background: linear-gradient(135deg, rgb(39, 174, 96) 0%, rgb(34, 153, 84) 100%);
+            color: white;
+        }
+        .btn-staff:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 10px 25px rgba(39, 174, 96, 0.4);
+        }
+        .icon {
+            font-size: 40px;
+            margin-bottom: 10px;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="card">
+            <h1>Data Centre Management System</h1>
+            <p class="subtitle">Welcome! Please select your role to continue</p>
+            
+            <div class="buttons">
+                <a href="/login_admin" class="btn-admin">
+                    <div class="icon">🔐</div>
+                    Admin Login
+                </a>
+                <a href="/login_staff" class="btn-staff">
+                    <div class="icon">👤</div>
+                    Staff Login
+                </a>
+            </div>
+        </div>
+    </div>
+</body>
+</html>

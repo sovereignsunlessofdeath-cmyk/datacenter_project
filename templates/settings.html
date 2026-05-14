@@ -1,0 +1,211 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="UTF-8">
+    <title>Settings</title>
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body { 
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #1e3c72 0%, #2a5298 100%);
+            min-height: 100vh;
+            padding: 20px;
+        }
+        .container { max-width: 900px; margin: 0 auto; }
+        .header { 
+            background: linear-gradient(135deg, #f6d365 0%, #fda085 100%);
+            color: white; 
+            padding: 30px; 
+            border-radius: 12px; 
+            margin-bottom: 30px;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.3);
+        }
+        .header h1 { font-size: 28px; margin-bottom: 5px; }
+        .header p { font-size: 14px; opacity: 0.9; }
+        .nav { 
+            background: white; 
+            padding: 15px 20px; 
+            border-radius: 12px; 
+            margin-bottom: 30px;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.1);
+            display: flex;
+            flex-wrap: wrap;
+            gap: 15px;
+        }
+        .nav a { 
+            text-decoration: none; 
+            color: #fda085; 
+            font-weight: 600;
+            padding: 8px 12px;
+            border-radius: 6px;
+            transition: all 0.3s ease;
+        }
+        .nav a:hover { 
+            background: #fff5f0;
+            color: #f6a855;
+        }
+        .card { 
+            background: white; 
+            padding: 25px; 
+            border-radius: 12px; 
+            margin-bottom: 25px;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.1);
+        }
+        .card h2 { 
+            color: #fda085; 
+            margin-bottom: 20px; 
+            font-size: 22px;
+            border-bottom: 3px solid #fda085;
+            padding-bottom: 10px;
+        }
+        .form-group { 
+            margin-bottom: 15px;
+            display: flex;
+            gap: 10px;
+        }
+        input { 
+            flex: 1;
+            padding: 10px;
+            border: 2px solid #e0e0e0;
+            border-radius: 8px;
+            font-size: 14px;
+            transition: border-color 0.3s ease;
+            font-family: inherit;
+        }
+        input:focus { 
+            outline: none;
+            border-color: #fda085;
+            box-shadow: 0 0 0 3px rgba(253, 160, 133, 0.1);
+        }
+        button { 
+            padding: 10px 20px;
+            background: linear-gradient(135deg, #f6d365 0%, #fda085 100%);
+            color: white; 
+            border: none; 
+            border-radius: 8px;
+            font-size: 14px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: transform 0.2s ease;
+            white-space: nowrap;
+        }
+        button:hover { 
+            transform: translateY(-2px);
+            box-shadow: 0 10px 25px rgba(253, 160, 133, 0.3);
+        }
+        .items-list { 
+            margin-top: 15px;
+        }
+        .tag { 
+            display: inline-block; 
+            background: linear-gradient(135deg, #f6d365 0%, #fda085 100%);
+            color: white;
+            padding: 8px 14px; 
+            border-radius: 20px; 
+            margin: 5px;
+            font-size: 14px;
+            font-weight: 500;
+        }
+        .remove-btn { 
+            background: #e74c3c; 
+            color: white; 
+            padding: 2px 8px; 
+            border: none; 
+            cursor: pointer; 
+            border-radius: 3px; 
+            font-size: 12px;
+            margin-left: 5px;
+        }
+        .remove-btn:hover { 
+            background: #c0392b; 
+        }
+        .empty-state {
+            color: #999;
+            font-style: italic;
+            padding: 15px;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <h1>⚙️ Settings</h1>
+            <p>Manage system configuration</p>
+        </div>
+
+        <div class="nav">
+            <a href="/">🍽️ Orders Preview</a>
+            <a href="/order">📝 Staff Order Link</a>
+            <a href="/order_history">📋 History</a>
+            <a href="/tickets">🎟️ IT Tickets</a>
+            <a href="/settings">⚙️ Settings</a>
+        </div>
+
+        <!-- Staff Management -->
+        <div class="card">
+            <h2>👥 Staff List</h2>
+            <form action="/add_staff" method="POST" class="form-group">
+                <input type="text" name="staff_name" placeholder="Enter staff name" required>
+                <button type="submit">Add Staff</button>
+            </form>
+            <div class="items-list">
+                {% for member in staff %}
+                <span class="tag">
+                    {{ member }}
+                    <form action="/remove_staff/{{ member }}" style="display:inline;">
+                        <button type="submit" class="remove-btn">✕</button>
+                    </form>
+                </span>
+                {% endfor %}
+                {% if staff|length == 0 %}
+                <div class="empty-state">No staff added yet</div>
+                {% endif %}
+            </div>
+        </div>
+
+        <!-- Food Menu Management -->
+        <div class="card">
+            <h2>🍛 Food Menu</h2>
+            <form action="/add_food" method="POST" class="form-group">
+                <input type="text" name="food_item" placeholder="Enter food item" required>
+                <button type="submit">Add Food</button>
+            </form>
+            <div class="items-list">
+                {% for item in menu %}
+                <span class="tag">
+                    {{ item }}
+                    <form action="/remove_food/{{ item }}" style="display:inline;">
+                        <button type="submit" class="remove-btn">✕</button>
+                    </form>
+                </span>
+                {% endfor %}
+                {% if menu|length == 0 %}
+                <div class="empty-state">No food items added yet</div>
+                {% endif %}
+            </div>
+        </div>
+
+        <!-- Ticket Categories Management -->
+        <div class="card">
+            <h2>🎟️ Ticket Categories</h2>
+            <form action="/add_category" method="POST" class="form-group">
+                <input type="text" name="category_name" placeholder="Enter category name" required>
+                <button type="submit">Add Category</button>
+            </form>
+            <div class="items-list">
+                {% for cat in categories %}
+                <span class="tag">
+                    {{ cat }}
+                    <form action="/remove_category/{{ cat }}" style="display:inline;">
+                        <button type="submit" class="remove-btn">✕</button>
+                    </form>
+                </span>
+                {% endfor %}
+                {% if categories|length == 0 %}
+                <div class="empty-state">No categories added yet</div>
+                {% endif %}
+            </div>
+        </div>
+    </div>
+</body>
+</html>

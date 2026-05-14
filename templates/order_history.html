@@ -1,0 +1,135 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="UTF-8">
+    <title>Order History</title>
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body { 
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #1e3c72 0%, #2a5298 100%);
+            min-height: 100vh;
+            padding: 20px;
+        }
+        .container { max-width: 900px; margin: 0 auto; }
+        .header { 
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white; 
+            padding: 30px; 
+            border-radius: 12px; 
+            margin-bottom: 30px;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.3);
+        }
+        .header h1 { font-size: 28px; margin-bottom: 5px; }
+        .header p { font-size: 14px; opacity: 0.9; }
+        .nav { 
+            background: white; 
+            padding: 15px 20px; 
+            border-radius: 12px; 
+            margin-bottom: 30px;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.1);
+            display: flex;
+            flex-wrap: wrap;
+            gap: 15px;
+        }
+        .nav a { 
+            text-decoration: none; 
+            color: #667eea; 
+            font-weight: 600;
+            padding: 8px 12px;
+            border-radius: 6px;
+            transition: all 0.3s ease;
+        }
+        .nav a:hover { 
+            background: #f0f0f0;
+            color: #764ba2;
+        }
+        .day-card { 
+            background: white; 
+            padding: 25px; 
+            border-radius: 12px; 
+            margin-bottom: 25px;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.1);
+        }
+        .day-card h2 { 
+            color: #667eea; 
+            margin-bottom: 20px; 
+            font-size: 20px;
+            border-bottom: 3px solid #667eea;
+            padding-bottom: 10px;
+        }
+        .food-group { 
+            background: linear-gradient(135deg, #f5f7fa 0%, #c3cfe2 100%);
+            padding: 15px; 
+            border-radius: 10px; 
+            margin-bottom: 12px;
+            border-left: 5px solid #667eea;
+        }
+        .food-group h3 { 
+            color: #2c3e50; 
+            margin-bottom: 10px;
+            font-size: 16px;
+        }
+        .voter-list { 
+            font-size: 14px; 
+            color: #555;
+            line-height: 1.6;
+        }
+        .empty-state {
+            text-align: center;
+            color: #999;
+            padding: 50px;
+            font-style: italic;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <h1>📋 Order History</h1>
+            <p>View past food orders</p>
+        </div>
+
+        <div class="nav">
+            <a href="/">🍽️ Orders Preview</a>
+            <a href="/order">📝 Staff Order Link</a>
+            <a href="/order_history">📋 History</a>
+            <a href="/tickets">🎟️ IT Tickets</a>
+            <a href="/settings">⚙️ Settings</a>
+        </div>
+
+        {% if orders|length == 0 %}
+        <div class="day-card">
+            <div class="empty-state">
+                📭 No order history yet
+            </div>
+        </div>
+        {% else %}
+            {% for day, day_orders in orders|dictsort|reverse %}
+            <div class="day-card">
+                <h2>📅 {{ day }}</h2>
+
+                {% set grouped = {} %}
+                {% for order in day_orders %}
+                    {% if order.food not in grouped %}
+                        {% set _ = grouped.update({order.food: []}) %}
+                    {% endif %}
+                    {% set _ = grouped[order.food].append(order.name) %}
+                {% endfor %}
+
+                {% for food, names in grouped.items() %}
+                <div class="food-group">
+                    <h3>{{ food }} ({{ names|length }} order(s))</h3>
+                    <div class="voter-list">
+                        {% for name in names %}
+                            • {{ name }}<br>
+                        {% endfor %}
+                    </div>
+                </div>
+                {% endfor %}
+            </div>
+            {% endfor %}
+        {% endif %}
+    </div>
+</body>
+</html>

@@ -1,0 +1,90 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="UTF-8">
+    <title>Order Confirmed</title>
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body { 
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #11998e 0%, #38ef7d 100%);
+            min-height: 100vh;
+            padding: 20px;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+        }
+        .container { max-width: 500px; width: 100%; }
+        .card { 
+            background: white; 
+            padding: 50px; 
+            border-radius: 15px;
+            box-shadow: 0 15px 40px rgba(0,0,0,0.3);
+            text-align: center;
+        }
+        .success-icon {
+            font-size: 60px;
+            margin-bottom: 20px;
+        }
+        h1 { 
+            color: #11998e;
+            margin-bottom: 10px;
+            font-size: 28px;
+        }
+        .message { 
+            color: #666;
+            margin-bottom: 30px;
+            font-size: 16px;
+            line-height: 1.6;
+        }
+        .button-group {
+            display: flex;
+            gap: 10px;
+            flex-direction: column;
+        }
+        a, button { 
+            padding: 12px;
+            border-radius: 8px;
+            font-size: 16px;
+            font-weight: 600;
+            cursor: pointer;
+            text-decoration: none;
+            transition: transform 0.2s ease;
+            border: none;
+        }
+        .btn-primary { 
+            background: linear-gradient(135deg, #11998e 0%, #38ef7d 100%);
+            color: white;
+        }
+        .btn-primary:hover { 
+            transform: translateY(-2px);
+            box-shadow: 0 10px 25px rgba(17, 153, 142, 0.3);
+        }
+        .btn-secondary { 
+            background: #f0f0f0;
+            color: #11998e;
+        }
+        .btn-secondary:hover { 
+            background: #e0e0e0;
+            transform: translateY(-2px);
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="card">
+            <div class="success-icon">✅</div>
+            <h1>Order Confirmed!</h1>
+            <p class="message">
+                Your food order has been successfully added.<br>
+                The admin will see it in the dashboard.
+            </p>
+
+            <div class="button-group">
+                <a href="/order" class="btn-primary">Order Again</a>
+                <a href="/order_history" class="btn-secondary">View History</a>
+            </div>
+        </div>
+    </div>
+</body>
+</html>

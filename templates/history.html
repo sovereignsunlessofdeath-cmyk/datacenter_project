@@ -1,0 +1,49 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="UTF-8">
+    <title>Order History</title>
+    <style>
+        body { font-family: Arial; max-width: 700px; margin: 40px auto; padding: 20px; }
+        .nav a { margin-right: 15px; text-decoration: none; color: #2980b9; }
+        .day-box { background: white; padding: 20px; margin-bottom: 20px; }
+        .poll-item { background: #f9f9f9; padding: 12px; margin-bottom: 10px; }
+    </style>
+</head>
+<body>
+    <div class="nav">
+        <a href="/">Orders</a>
+        <a href="/settings">Settings</a>
+        <a href="/history">History</a>
+    </div>
+
+    <h1>Order History</h1>
+
+    {% if orders|length == 0 %}
+    <p>No history yet.</p>
+    {% endif %}
+
+    {% for day, day_orders in orders|dictsort|reverse %}
+    <div class="day-box">
+        <h2>{{ day }}</h2>
+
+        {% set grouped = {} %}
+        {% for order in day_orders %}
+            {% if order.food not in grouped %}
+                {% set _ = grouped.update({order.food: []}) %}
+            {% endif %}
+            {% set _ = grouped[order.food].append(order.name) %}
+        {% endfor %}
+
+        {% for food, names in grouped.items() %}
+        <div class="poll-item">
+            <h3>{{ food }} ({{ names|length }})</h3>
+            {% for name in names %}
+            {{ name }}<br>
+            {% endfor %}
+        </div>
+        {% endfor %}
+    </div>
+    {% endfor %}
+</body>
+</html>

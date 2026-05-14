@@ -1,0 +1,122 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="UTF-8">
+    <title>Admin Login</title>
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body { 
+            font-family: Segoe UI, Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, rgb(30, 60, 114) 0%, rgb(42, 82, 152) 100%);
+            min-height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            padding: 20px;
+        }
+        .container { max-width: 500px; width: 100%; }
+        .card { 
+            background: white; 
+            padding: 40px; 
+            border-radius: 15px; 
+            box-shadow: 0 15px 40px rgba(0,0,0,0.3);
+        }
+        h1 { 
+            color: rgb(102, 126, 234);
+            margin-bottom: 30px;
+            text-align: center;
+            font-size: 28px;
+        }
+        .form-group { 
+            margin-bottom: 20px;
+        }
+        label { 
+            display: block;
+            margin-bottom: 8px;
+            color: rgb(44, 62, 80);
+            font-weight: 600;
+            font-size: 14px;
+        }
+        input { 
+            width: 100%;
+            padding: 12px;
+            border: 2px solid rgb(220, 220, 220);
+            border-radius: 8px;
+            font-size: 14px;
+            transition: border-color 0.3s ease;
+            font-family: inherit;
+        }
+        input:focus { 
+            outline: none;
+            border-color: rgb(102, 126, 234);
+            box-shadow: 0 0 0 3px rgba(102, 126, 234, 0.1);
+        }
+        button { 
+            width: 100%;
+            padding: 12px;
+            background: linear-gradient(135deg, rgb(102, 126, 234) 0%, rgb(118, 75, 162) 100%);
+            color: white; 
+            border: none; 
+            border-radius: 8px;
+            font-size: 16px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: transform 0.2s ease;
+        }
+        button:hover { 
+            transform: translateY(-2px);
+            box-shadow: 0 10px 25px rgba(102, 126, 234, 0.3);
+        }
+        .back-link {
+            text-align: center;
+            margin-top: 20px;
+        }
+        .back-link a {
+            color: rgb(102, 126, 234);
+            text-decoration: none;
+            font-weight: 600;
+            transition: color 0.3s ease;
+        }
+        .back-link a:hover {
+            color: rgb(118, 75, 162);
+        }
+        .error {
+            background: rgb(242, 222, 222);
+            color: rgb(169, 68, 66);
+            padding: 12px;
+            border-radius: 8px;
+            margin-bottom: 20px;
+            border-left: 4px solid rgb(231, 76, 60);
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="card">
+            <h1>Admin Login</h1>
+            
+            {% if error %}
+            <div class="error">{{ error }}</div>
+            {% endif %}
+
+            <form action="/login_admin" method="POST">
+                <div class="form-group">
+                    <label for="username">Username</label>
+                    <input type="text" id="username" name="username" placeholder="Enter your username" required>
+                </div>
+
+                <div class="form-group">
+                    <label for="password">Password</label>
+                    <input type="password" id="password" name="password" placeholder="Enter your password" required>
+                </div>
+
+                <button type="submit">Login</button>
+            </form>
+
+            <div class="back-link">
+                <a href="/">Back to Home</a>
+            </div>
+        </div>
+    </div>
+</body>
+</html>

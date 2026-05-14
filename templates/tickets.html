@@ -1,0 +1,263 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="UTF-8">
+    <title>IT Helpdesk Tickets</title>
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body { 
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #1e3c72 0%, #2a5298 100%);
+            min-height: 100vh;
+            padding: 20px;
+        }
+        .container { max-width: 950px; margin: 0 auto; }
+        .header { 
+            background: linear-gradient(135deg, #f093fb 0%, #f5576c 100%);
+            color: white; 
+            padding: 30px; 
+            border-radius: 12px; 
+            margin-bottom: 30px;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.3);
+        }
+        .header h1 { font-size: 28px; margin-bottom: 5px; }
+        .header p { font-size: 14px; opacity: 0.9; }
+        .nav { 
+            background: white; 
+            padding: 15px 20px; 
+            border-radius: 12px; 
+            margin-bottom: 30px;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.1);
+            display: flex;
+            flex-wrap: wrap;
+            gap: 15px;
+        }
+        .nav a { 
+            text-decoration: none; 
+            color: #f5576c; 
+            font-weight: 600;
+            padding: 8px 12px;
+            border-radius: 6px;
+            transition: all 0.3s ease;
+        }
+        .nav a:hover { 
+            background: #fff0f0;
+            color: #d63031;
+        }
+        .card { 
+            background: white; 
+            padding: 25px; 
+            border-radius: 12px; 
+            margin-bottom: 25px;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.1);
+        }
+        .card h2 { 
+            color: #f5576c; 
+            margin-bottom: 20px; 
+            font-size: 22px;
+            border-bottom: 3px solid #f5576c;
+            padding-bottom: 10px;
+        }
+        .form-group { 
+            margin-bottom: 15px;
+        }
+        label { 
+            display: block;
+            margin-bottom: 6px;
+            color: #2c3e50;
+            font-weight: 600;
+            font-size: 13px;
+        }
+        input, select, textarea { 
+            width: 100%;
+            padding: 10px;
+            border: 2px solid #e0e0e0;
+            border-radius: 8px;
+            font-size: 14px;
+            transition: border-color 0.3s ease;
+            font-family: inherit;
+        }
+        input:focus, select:focus, textarea:focus { 
+            outline: none;
+            border-color: #f5576c;
+            box-shadow: 0 0 0 3px rgba(245, 87, 108, 0.1);
+        }
+        button { 
+            padding: 11px 20px;
+            background: linear-gradient(135deg, #f093fb 0%, #f5576c 100%);
+            color: white; 
+            border: none; 
+            border-radius: 8px;
+            font-size: 14px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: transform 0.2s ease;
+        }
+        button:hover { 
+            transform: translateY(-2px);
+            box-shadow: 0 10px 25px rgba(245, 87, 108, 0.3);
+        }
+        .ticket { 
+            background: white; 
+            padding: 20px; 
+            border-radius: 10px; 
+            margin-bottom: 15px; 
+            border-left: 5px solid #e0e0e0;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.08);
+        }
+        .ticket.open { border-left-color: #e74c3c; background: #fff5f5; }
+        .ticket.in-progress { border-left-color: #f39c12; background: #fffbf0; }
+        .ticket.resolved { border-left-color: #27ae60; background: #f0fff4; }
+        .ticket h3 { 
+            margin: 0 0 10px 0; 
+            color: #2c3e50;
+            font-size: 16px;
+        }
+        .ticket-meta { 
+            font-size: 12px; 
+            color: #7f8c8d; 
+            margin-bottom: 10px;
+        }
+        .status-badge { 
+            display: inline-block; 
+            padding: 5px 12px; 
+            border-radius: 20px; 
+            font-size: 12px; 
+            font-weight: bold;
+            margin-right: 10px;
+        }
+        .status-open { background: #e74c3c; color: white; }
+        .status-in-progress { background: #f39c12; color: white; }
+        .status-resolved { background: #27ae60; color: white; }
+        .ticket-desc {
+            color: #555;
+            margin: 10px 0;
+            line-height: 1.5;
+        }
+        .ticket-actions { 
+            margin-top: 12px; 
+            display: flex;
+            gap: 8px;
+            flex-wrap: wrap;
+        }
+        .btn-action { 
+            padding: 6px 12px; 
+            font-size: 12px; 
+            background: #3498db; 
+            color: white; 
+            border: none; 
+            border-radius: 4px; 
+            cursor: pointer;
+            text-decoration: none;
+            transition: all 0.2s ease;
+        }
+        .btn-action:hover { 
+            background: #2980b9;
+            transform: translateY(-1px);
+        }
+        .btn-danger { 
+            background: #e74c3c; 
+        }
+        .btn-danger:hover { 
+            background: #c0392b; 
+        }
+        .empty-state {
+            text-align: center;
+            color: #999;
+            padding: 40px;
+            font-style: italic;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <h1>🎟️ IT Helpdesk System</h1>
+            <p>Support Ticket Management</p>
+        </div>
+
+        <div class="nav">
+            <a href="/">🍽️ Orders Preview</a>
+            <a href="/order">📝 Staff Order Link</a>
+            <a href="/order_history">📋 History</a>
+            <a href="/tickets">🎟️ IT Tickets</a>
+            <a href="/settings">⚙️ Settings</a>
+        </div>
+
+        <div class="card">
+            <h2>Submit New Support Ticket</h2>
+            <form action="/submit_ticket" method="POST">
+                <div class="form-group">
+                    <label>Your Name *</label>
+                    <input type="text" name="name" placeholder="Enter your full name" required>
+                </div>
+
+                <div class="form-group">
+                    <label>Department *</label>
+                    <input type="text" name="department" placeholder="e.g. IT, Operations, Finance" required>
+                </div>
+
+                <div class="form-group">
+                    <label>Issue Category *</label>
+                    <select name="category" required>
+                        <option value="">-- Select Category --</option>
+                        {% for cat in categories %}
+                        <option value="{{ cat }}">{{ cat }}</option>
+                        {% endfor %}
+                    </select>
+                </div>
+
+                <div class="form-group">
+                    <label>Describe Your Issue *</label>
+                    <textarea name="description" placeholder="Provide details about your issue..." rows="4" required></textarea>
+                </div>
+
+                <button type="submit">📤 Submit Ticket</button>
+            </form>
+        </div>
+
+        <div class="card">
+            <h2>Active Tickets ({{ tickets|length }})</h2>
+
+            {% if tickets|length == 0 %}
+            <div class="empty-state">
+                ✅ No open tickets. Great job!
+            </div>
+            {% else %}
+                {% for ticket in tickets|reverse %}
+                <div class="ticket {{ ticket.status|lower|replace(' ', '-') }}">
+                    <h3>#{{ ticket.id }} - {{ ticket.description[:60] }}{% if ticket.description|length > 60 %}...{% endif %}</h3>
+                    
+                    <div class="ticket-meta">
+                        <strong>Name:</strong> {{ ticket.name }} | 
+                        <strong>Department:</strong> {{ ticket.department }} | 
+                        <strong>Category:</strong> {{ ticket.category }}<br>
+                        <strong>Submitted:</strong> {{ ticket.date_created[:10] }}
+                    </div>
+
+                    <span class="status-badge status-{{ ticket.status|lower|replace(' ', '-') }}">{{ ticket.status }}</span>
+
+                    <div class="ticket-desc">
+                        {{ ticket.description }}
+                    </div>
+
+                    <div class="ticket-actions">
+                        {% if ticket.status != "Resolved" %}
+                            <form action="/update_ticket/{{ ticket.id }}/In Progress" style="display:inline;">
+                                <button type="submit" class="btn-action">⏳ In Progress</button>
+                            </form>
+                            <form action="/update_ticket/{{ ticket.id }}/Resolved" style="display:inline;">
+                                <button type="submit" class="btn-action">✅ Resolved</button>
+                            </form>
+                        {% endif %}
+                        <form action="/delete_ticket/{{ ticket.id }}" style="display:inline;">
+                            <button type="submit" class="btn-action btn-danger">🗑️ Delete</button>
+                        </form>
+                    </div>
+                </div>
+                {% endfor %}
+            {% endif %}
+        </div>
+    </div>
+</body>
+</html>
