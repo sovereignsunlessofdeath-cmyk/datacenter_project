@@ -2,10 +2,19 @@ from flask import Flask, render_template, request, redirect, url_for, session
 import json
 import os
 from datetime import date, datetime, timedelta
+import smtplib
+from email.mime.text import MIMEText
+from email.mime.multipart import MIMEMultipart
+from dotenv import load_dotenv
+
+load_dotenv()
 
 app = Flask(__name__)
 app.secret_key = 'your_secret_key_change_this'
 DATA_FILE = 'data.json'
+
+EMAIL_ADDRESS = os.getenv('EMAIL_ADDRESS')
+EMAIL_PASSWORD = os.getenv('EMAIL_PASSWORD')
 
 # Admin credentials
 ADMIN_ACCOUNTS = {
@@ -62,6 +71,47 @@ def search_and_rank_food(data, search_term):
     matching_foods.sort(key=lambda x: x["times_ordered"], reverse=True)
     
     return matching_foods
+
+# Send email notification for ticket response
+def send_ticket_response_email(staff_email, ticket_id, status, response_message):
+    """
+    Send email notification when ticket is responded to
+    """
+    try:
+        subject = f"Ticket #{ticket_id} - Response from IT Team"
+        
+        body = f"""
+Hello,
+
+Your support ticket has been responded to.
+
+Ticket ID: #{ticket_id}
+Current Status: {status}
+
+Response from IT Team:
+{response_message}
+
+Please log back into the system to view more details.
+
+Best regards,
+Data Centre IT Team
+        """
+        
+        message = MIMEMultipart()
+        message['From'] = EMAIL_ADDRESS
+        message['To'] = staff_email
+        message['Subject'] = subject
+        
+        message.attach(MIMEText(body, 'plain'))
+        
+        with smtplib.SMTP_SSL('smtp.gmail.com', 465) as server:
+            server.login(EMAIL_ADDRESS, EMAIL_PASSWORD)
+            server.send_message(message)
+        
+        return True
+    except Exception as e:
+        print(f"Error sending email: {str(e)}")
+        return False
 
 # ============== LOGIN ROUTES ==============
 
@@ -235,6 +285,41 @@ def submit_ticket():
     data["tickets"].append(ticket)
     save_data(data)
     return redirect(url_for('submit_support_ticket'))
+
+@app.route('/respond_ticket/<int:ticket_id>', methods=['GET', 'POST'])
+def respond_ticket(ticket_id):
+    if 'user' not in session or session.get('role') != 'admin':
+        return redirect(url_for('login_admin'))
+    
+    data = load_data()
+    ticket = None
+    
+    for t in data["tickets"]:
+        if t["id"] == ticket_id:
+            ticket = t
+            break
+    
+    if not ticket:
+        return redirect(url_for('tickets'))
+    
+    if request.method == 'POST':
+        response_message = request.form.get('response_message', '').strip()
+        new_status = request.form.get('status', ticket['status'])
+        
+        if response_message:
+            ticket['status'] = new_status
+            if new_status == "Resolved":
+                ticket['date_resolved'] = str(datetime.now())
+            
+            save_data(data)
+            
+            # Send email notification
+            staff_email = ticket['name'] + '@company.com'
+            send_ticket_response_email(staff_email, ticket_id, new_status, response_message)
+            
+            return redirect(url_for('tickets'))
+    
+    return render_template('respond_ticket.html', ticket=ticket, username=session.get('user'))
 
 @app.route('/update_ticket/<int:ticket_id>/<string:status>')
 def update_ticket(ticket_id, status):

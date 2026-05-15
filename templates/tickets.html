@@ -161,6 +161,23 @@
         .btn-danger:hover { 
             background: #c0392b; 
         }
+        .btn-respond {
+            background: #667eea;
+            color: white;
+            padding: 6px 12px;
+            border-radius: 4px;
+            text-decoration: none;
+            font-weight: 600;
+            display: inline-block;
+            font-size: 12px;
+            transition: all 0.2s ease;
+            border: none;
+            cursor: pointer;
+        }
+        .btn-respond:hover {
+            background: #5568d3;
+            transform: translateY(-1px);
+        }
         .empty-state {
             text-align: center;
             color: #999;
@@ -242,6 +259,7 @@
                     </div>
 
                     <div class="ticket-actions">
+                        <a href="/respond_ticket/{{ ticket.id }}" class="btn-respond">💬 Respond</a>
                         {% if ticket.status != "Resolved" %}
                             <form action="/update_ticket/{{ ticket.id }}/In Progress" style="display:inline;">
                                 <button type="submit" class="btn-action">⏳ In Progress</button>

@@ -1,0 +1,132 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="UTF-8">
+    <title>Respond to Ticket</title>
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body { 
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, rgb(26, 26, 26) 0%, rgb(40, 40, 40) 100%);
+            min-height: 100vh;
+            padding: 20px;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+        }
+        .container { max-width: 600px; width: 100%; }
+        .card { 
+            background: white; 
+            padding: 40px; 
+            border-radius: 15px;
+            box-shadow: 0 15px 40px rgba(0,0,0,0.3);
+        }
+        h1 { 
+            color: #667eea;
+            margin-bottom: 30px;
+            text-align: center;
+        }
+        .ticket-info {
+            background: #f0f4ff;
+            padding: 15px;
+            border-radius: 8px;
+            margin-bottom: 25px;
+            border-left: 4px solid #667eea;
+        }
+        .ticket-detail {
+            margin-bottom: 10px;
+            color: #2c3e50;
+        }
+        .ticket-detail strong {
+            color: #667eea;
+        }
+        .form-group { 
+            margin-bottom: 20px;
+        }
+        label { 
+            display: block;
+            margin-bottom: 8px;
+            color: #2c3e50;
+            font-weight: 600;
+            font-size: 14px;
+        }
+        input, select, textarea { 
+            width: 100%;
+            padding: 12px;
+            border: 2px solid #e0e0e0;
+            border-radius: 8px;
+            font-size: 14px;
+            transition: border-color 0.3s ease;
+            font-family: inherit;
+        }
+        input:focus, select:focus, textarea:focus { 
+            outline: none;
+            border-color: #667eea;
+            box-shadow: 0 0 0 3px rgba(102, 126, 234, 0.1);
+        }
+        button { 
+            width: 100%;
+            padding: 12px;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white; 
+            border: none; 
+            border-radius: 8px;
+            font-size: 16px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: transform 0.2s ease;
+        }
+        button:hover { 
+            transform: translateY(-2px);
+            box-shadow: 0 10px 25px rgba(102, 126, 234, 0.3);
+        }
+        .back-link {
+            text-align: center;
+            margin-top: 20px;
+        }
+        .back-link a {
+            color: #667eea;
+            text-decoration: none;
+            font-weight: 600;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="card">
+            <h1>Respond to Ticket</h1>
+            
+            <div class="ticket-info">
+                <div class="ticket-detail"><strong>Ticket ID:</strong> #{{ ticket.id }}</div>
+                <div class="ticket-detail"><strong>From:</strong> {{ ticket.name }}</div>
+                <div class="ticket-detail"><strong>Department:</strong> {{ ticket.department }}</div>
+                <div class="ticket-detail"><strong>Category:</strong> {{ ticket.category }}</div>
+                <div class="ticket-detail"><strong>Current Status:</strong> {{ ticket.status }}</div>
+                <div class="ticket-detail"><strong>Issue:</strong> {{ ticket.description }}</div>
+            </div>
+
+            <form action="/respond_ticket/{{ ticket.id }}" method="POST">
+                <div class="form-group">
+                    <label for="status">Update Status</label>
+                    <select id="status" name="status" required>
+                        <option value="Open" {% if ticket.status == 'Open' %}selected{% endif %}>Open</option>
+                        <option value="In Progress" {% if ticket.status == 'In Progress' %}selected{% endif %}>In Progress</option>
+                        <option value="Resolved" {% if ticket.status == 'Resolved' %}selected{% endif %}>Resolved</option>
+                    </select>
+                </div>
+
+                <div class="form-group">
+                    <label for="response_message">Your Response</label>
+                    <textarea id="response_message" name="response_message" placeholder="Type your response to send to the staff member..." rows="6" required></textarea>
+                </div>
+
+                <button type="submit">Send Response & Email</button>
+            </form>
+
+            <div class="back-link">
+                <a href="/tickets">← Back to Tickets</a>
+            </div>
+        </div>
+    </div>
+</body>
+</html>
