@@ -157,7 +157,8 @@
                 </div>
 
                 <div class="form-group">
-                    <label for="food">Choose Your Food *</label>
+                    <label for="search">Search or Choose Your Food *</label>
+                    <input type="text" id="search" placeholder="Type to search food..." style="margin-bottom: 10px;">
                     <select id="food" name="food_choice" required>
                         <option value="">-- Select a meal --</option>
                         {% for item in menu %}
@@ -175,5 +176,23 @@
             </p>
         </div>
     </div>
+
+    <script>
+        const searchInput = document.getElementById('search');
+        const foodSelect = document.getElementById('food');
+        const options = Array.from(foodSelect.options).slice(1);
+
+        searchInput.addEventListener('input', function() {
+            const searchTerm = this.value.toLowerCase().trim();
+            
+            options.forEach(option => {
+                if (searchTerm === '' || option.text.toLowerCase().includes(searchTerm)) {
+                    option.style.display = '';
+                } else {
+                    option.style.display = 'none';
+                }
+            });
+        });
+    </script>
 </body>
 </html>
