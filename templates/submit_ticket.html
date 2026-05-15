@@ -2,31 +2,60 @@
 <html>
 <head>
     <meta charset="UTF-8">
-    <title>Admin Login</title>
+    <title>Submit Support Ticket</title>
     <style>
         * { margin: 0; padding: 0; box-sizing: border-box; }
         body { 
             font-family: Segoe UI, Tahoma, Geneva, Verdana, sans-serif;
-            background: linear-gradient(135deg, rgb(26, 26, 26) 0%, rgb(40, 40, 40) 100%);
+            background: linear-gradient(135deg, rgb(30, 60, 114) 0%, rgb(42, 82, 152) 100%);
             min-height: 100vh;
-            display: flex;
-            justify-content: center;
-            align-items: center;
             padding: 20px;
         }
-        .container { max-width: 500px; width: 100%; }
-        .card { 
-            background: rgb(26, 26, 26); 
-            padding: 40px; 
-            border-radius: 15px; 
-            box-shadow: 0 15px 40px rgba(0,0,0,0.5);
-            border: 1px solid rgb(60, 60, 60);
-        }
-        h1 { 
-            color: white;
+        .container { max-width: 700px; margin: 0 auto; }
+        .header { 
+            background: linear-gradient(135deg, rgb(231, 76, 60) 0%, rgb(192, 57, 43) 100%);
+            color: white; 
+            padding: 30px; 
+            border-radius: 12px; 
             margin-bottom: 30px;
-            text-align: center;
-            font-size: 28px;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.3);
+        }
+        .header h1 { font-size: 28px; margin-bottom: 5px; }
+        .header p { font-size: 14px; opacity: 0.9; }
+        .nav { 
+            background: white; 
+            padding: 15px 20px; 
+            border-radius: 12px; 
+            margin-bottom: 30px;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.1);
+            display: flex;
+            flex-wrap: wrap;
+            gap: 15px;
+        }
+        .nav a { 
+            text-decoration: none; 
+            color: rgb(231, 76, 60); 
+            font-weight: 600;
+            padding: 8px 12px;
+            border-radius: 6px;
+            transition: all 0.3s ease;
+        }
+        .nav a:hover { 
+            background: rgb(255, 245, 245);
+            color: rgb(192, 57, 43);
+        }
+        .card { 
+            background: white; 
+            padding: 25px; 
+            border-radius: 12px; 
+            box-shadow: 0 5px 15px rgba(0,0,0,0.1);
+        }
+        .card h2 { 
+            color: rgb(231, 76, 60); 
+            margin-bottom: 20px; 
+            font-size: 22px;
+            border-bottom: 3px solid rgb(231, 76, 60);
+            padding-bottom: 10px;
         }
         .form-group { 
             margin-bottom: 20px;
@@ -34,30 +63,28 @@
         label { 
             display: block;
             margin-bottom: 8px;
-            color: rgb(200, 200, 200);
+            color: rgb(44, 62, 80);
             font-weight: 600;
             font-size: 14px;
         }
-        input { 
+        input, select, textarea { 
             width: 100%;
             padding: 12px;
-            border: 2px solid rgb(60, 60, 60);
+            border: 2px solid rgb(220, 220, 220);
             border-radius: 8px;
             font-size: 14px;
-            background: rgb(40, 40, 40);
-            color: white;
             transition: border-color 0.3s ease;
             font-family: inherit;
         }
-        input:focus { 
+        input:focus, select:focus, textarea:focus { 
             outline: none;
-            border-color: rgb(100, 100, 100);
-            box-shadow: 0 0 0 3px rgba(100, 100, 100, 0.1);
+            border-color: rgb(231, 76, 60);
+            box-shadow: 0 0 0 3px rgba(231, 76, 60, 0.1);
         }
         button { 
             width: 100%;
             padding: 12px;
-            background: linear-gradient(135deg, rgb(102, 126, 234) 0%, rgb(118, 75, 162) 100%);
+            background: linear-gradient(135deg, rgb(231, 76, 60) 0%, rgb(192, 57, 43) 100%);
             color: white; 
             border: none; 
             border-radius: 8px;
@@ -68,52 +95,81 @@
         }
         button:hover { 
             transform: translateY(-2px);
-            box-shadow: 0 10px 25px rgba(102, 126, 234, 0.3);
+            box-shadow: 0 10px 25px rgba(231, 76, 60, 0.3);
         }
-        .back-link {
-            text-align: center;
-            margin-top: 20px;
-        }
-        .back-link a {
-            color: rgb(150, 150, 150);
-            text-decoration: none;
-            font-weight: 600;
-            transition: color 0.3s ease;
-        }
-        .back-link a:hover {
-            color: white;
-        }
-        .error {
-            background: rgb(60, 30, 30);
-            color: rgb(255, 100, 100);
+        .user-info {
+            background: rgb(245, 245, 245);
             padding: 12px;
             border-radius: 8px;
             margin-bottom: 20px;
-            border-left: 4px solid rgb(200, 50, 50);
+            color: rgb(100, 100, 100);
+            font-size: 14px;
+        }
+        .logout-btn {
+            background: rgb(200, 200, 200);
+            color: rgb(80, 80, 80);
+            text-decoration: none;
+            padding: 8px 12px;
+            border-radius: 6px;
+            font-weight: 600;
+            transition: all 0.2s ease;
+            display: inline-block;
+            margin-top: 20px;
+        }
+        .logout-btn:hover {
+            background: rgb(180, 180, 180);
         }
     </style>
 </head>
 <body>
     <div class="container">
+        <div class="header">
+            <h1>Submit Support Ticket</h1>
+            <p>Report an issue and get help from IT team</p>
+        </div>
+
+        <div class="nav">
+            <a href="/order">Order Food</a>
+            <a href="/submit_support_ticket">Submit Ticket</a>
+            <a href="/logout">Logout</a>
+        </div>
+
         <div class="card">
-            <h1>Admin Login</h1>
-            {% if error %}
-            <div class="error">{{ error }}</div>
-            {% endif %}
-            <form action="/login_admin" method="POST">
-                <div class="form-group">
-                    <label for="username">Username</label>
-                    <input type="text" id="username" name="username" placeholder="Enter your username" required>
-                </div>
-                <div class="form-group">
-                    <label for="password">Password</label>
-                    <input type="password" id="password" name="password" placeholder="Enter your password" required>
-                </div>
-                <button type="submit">Login</button>
-            </form>
-            <div class="back-link">
-                <a href="/">Back to Home</a>
+            <div class="user-info">
+                Logged in as: <strong>{{ username }}</strong>
             </div>
+
+            <h2>New Support Ticket</h2>
+            <form action="/submit_ticket" method="POST">
+                <div class="form-group">
+                    <label for="name">Your Name</label>
+                    <input type="text" id="name" name="name" value="{{ username }}" readonly>
+                </div>
+
+                <div class="form-group">
+                    <label for="department">Department</label>
+                    <input type="text" id="department" name="department" placeholder="e.g. IT, Operations, Finance" required>
+                </div>
+
+                <div class="form-group">
+                    <label for="category">Issue Category</label>
+                    <select id="category" name="category" required>
+                        <option value="">-- Select Category --</option>
+                        {% for cat in categories %}
+                        <option value="{{ cat }}">{{ cat }}</option>
+                        {% endfor %}
+                    </select>
+                </div>
+
+                <div class="form-group">
+                    <label for="description">Describe Your Issue</label>
+                    <textarea id="description" name="description" placeholder="Provide details about your issue..." rows="5" required></textarea>
+                </div>
+
+                <button type="submit">Submit Ticket</button>
+            </form>
+
+            <a href="/logout" class="logout-btn">Logout</a>
         </div>
     </div>
 </body>
