@@ -7,7 +7,7 @@
         * { margin: 0; padding: 0; box-sizing: border-box; }
         body { 
             font-family: Segoe UI, Tahoma, Geneva, Verdana, sans-serif;
-            background: linear-gradient(135deg, rgb(30, 60, 114) 0%, rgb(42, 82, 152) 100%);
+            background: linear-gradient(135deg, rgb(26, 26, 26) 0%, rgb(40, 40, 40) 100%);
             min-height: 100vh;
             display: flex;
             justify-content: center;
@@ -16,13 +16,14 @@
         }
         .container { max-width: 500px; width: 100%; }
         .card { 
-            background: white; 
+            background: rgb(26, 26, 26); 
             padding: 40px; 
             border-radius: 15px; 
-            box-shadow: 0 15px 40px rgba(0,0,0,0.3);
+            box-shadow: 0 15px 40px rgba(0,0,0,0.5);
+            border: 1px solid rgb(60, 60, 60);
         }
         h1 { 
-            color: rgb(102, 126, 234);
+            color: white;
             margin-bottom: 30px;
             text-align: center;
             font-size: 28px;
@@ -33,23 +34,25 @@
         label { 
             display: block;
             margin-bottom: 8px;
-            color: rgb(44, 62, 80);
+            color: rgb(200, 200, 200);
             font-weight: 600;
             font-size: 14px;
         }
         input { 
             width: 100%;
             padding: 12px;
-            border: 2px solid rgb(220, 220, 220);
+            border: 2px solid rgb(60, 60, 60);
             border-radius: 8px;
             font-size: 14px;
+            background: rgb(40, 40, 40);
+            color: white;
             transition: border-color 0.3s ease;
             font-family: inherit;
         }
         input:focus { 
             outline: none;
-            border-color: rgb(102, 126, 234);
-            box-shadow: 0 0 0 3px rgba(102, 126, 234, 0.1);
+            border-color: rgb(100, 100, 100);
+            box-shadow: 0 0 0 3px rgba(100, 100, 100, 0.1);
         }
         button { 
             width: 100%;
@@ -72,21 +75,21 @@
             margin-top: 20px;
         }
         .back-link a {
-            color: rgb(102, 126, 234);
+            color: rgb(150, 150, 150);
             text-decoration: none;
             font-weight: 600;
             transition: color 0.3s ease;
         }
         .back-link a:hover {
-            color: rgb(118, 75, 162);
+            color: white;
         }
         .error {
-            background: rgb(242, 222, 222);
-            color: rgb(169, 68, 66);
+            background: rgb(60, 30, 30);
+            color: rgb(255, 100, 100);
             padding: 12px;
             border-radius: 8px;
             margin-bottom: 20px;
-            border-left: 4px solid rgb(231, 76, 60);
+            border-left: 4px solid rgb(200, 50, 50);
         }
     </style>
 </head>
@@ -94,25 +97,20 @@
     <div class="container">
         <div class="card">
             <h1>Admin Login</h1>
-            
             {% if error %}
             <div class="error">{{ error }}</div>
             {% endif %}
-
             <form action="/login_admin" method="POST">
                 <div class="form-group">
                     <label for="username">Username</label>
                     <input type="text" id="username" name="username" placeholder="Enter your username" required>
                 </div>
-
                 <div class="form-group">
                     <label for="password">Password</label>
                     <input type="password" id="password" name="password" placeholder="Enter your password" required>
                 </div>
-
                 <button type="submit">Login</button>
             </form>
-
             <div class="back-link">
                 <a href="/">Back to Home</a>
             </div>
