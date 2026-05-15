@@ -1,0 +1,194 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="UTF-8">
+    <title>Search Food</title>
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body { 
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, rgb(26, 26, 26) 0%, rgb(40, 40, 40) 100%);
+            min-height: 100vh;
+            padding: 20px;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            flex-direction: column;
+        }
+        .top-nav {
+            width: 100%;
+            max-width: 600px;
+            background: white;
+            padding: 12px 20px;
+            border-radius: 12px;
+            margin-bottom: 20px;
+            display: flex;
+            gap: 10px;
+            justify-content: space-between;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.1);
+        }
+        .top-nav a {
+            background: #667eea;
+            color: white;
+            padding: 8px 12px;
+            border-radius: 6px;
+            text-decoration: none;
+            font-weight: 600;
+            font-size: 13px;
+            transition: all 0.2s ease;
+        }
+        .top-nav a:hover {
+            background: #764ba2;
+            transform: translateY(-2px);
+        }
+        .user-info {
+            width: 100%;
+            max-width: 600px;
+            background: white;
+            padding: 10px 20px;
+            border-radius: 12px;
+            margin-bottom: 15px;
+            color: #667eea;
+            font-size: 13px;
+            font-weight: 600;
+            text-align: center;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.1);
+        }
+        .container { max-width: 600px; width: 100%; }
+        .card { 
+            background: white; 
+            padding: 40px; 
+            border-radius: 15px;
+            box-shadow: 0 15px 40px rgba(0,0,0,0.3);
+        }
+        .card h1 { 
+            color: #667eea;
+            margin-bottom: 20px;
+            font-size: 28px;
+            text-align: center;
+        }
+        .search-box {
+            margin-bottom: 30px;
+        }
+        .search-box input {
+            width: 100%;
+            padding: 12px;
+            border: 2px solid #e0e0e0;
+            border-radius: 8px;
+            font-size: 14px;
+            transition: border-color 0.3s ease;
+        }
+        .search-box input:focus {
+            outline: none;
+            border-color: #667eea;
+            box-shadow: 0 0 0 3px rgba(102, 126, 234, 0.1);
+        }
+        .search-btn {
+            width: 100%;
+            padding: 12px;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            border: none;
+            border-radius: 8px;
+            font-size: 16px;
+            font-weight: 600;
+            cursor: pointer;
+            margin-top: 10px;
+            transition: transform 0.2s ease;
+        }
+        .search-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 10px 25px rgba(102, 126, 234, 0.3);
+        }
+        .results {
+            margin-top: 30px;
+        }
+        .result-item {
+            background: linear-gradient(135deg, #f5f7fa 0%, #c3cfe2 100%);
+            padding: 15px;
+            border-radius: 8px;
+            margin-bottom: 12px;
+            border-left: 4px solid #667eea;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        .result-name {
+            font-weight: 600;
+            color: #2c3e50;
+        }
+        .result-count {
+            background: #667eea;
+            color: white;
+            padding: 5px 10px;
+            border-radius: 20px;
+            font-size: 12px;
+            font-weight: 600;
+        }
+        .no-results {
+            text-align: center;
+            color: #999;
+            padding: 40px;
+            font-style: italic;
+        }
+        .search-info {
+            background: #f0f4ff;
+            padding: 15px;
+            border-radius: 8px;
+            margin-bottom: 20px;
+            color: #667eea;
+            font-weight: 600;
+        }
+    </style>
+</head>
+<body>
+    <div class="top-nav">
+        <a href="/order">🍽️ Order Food</a>
+        <a href="/search_food">🔍 Search Food</a>
+        <a href="/logout">🚪 Logout</a>
+    </div>
+
+    <div class="user-info">
+        Logged in as: <strong>{{ username }}</strong>
+    </div>
+
+    <div class="container">
+        <div class="card">
+            <h1>🔍 Search Food</h1>
+            
+            <div class="search-box">
+                <form method="POST">
+                    <input type="text" name="search_query" placeholder="Search for rice, beans, chicken, etc." required>
+                    <button class="search-btn">Search</button>
+                </form>
+            </div>
+
+            {% if search_query %}
+            <div class="search-info">
+                Results for: <strong>"{{ search_query }}"</strong>
+            </div>
+            {% endif %}
+
+            <div class="results">
+                {% if results %}
+                    {% for food in results %}
+                    <div class="result-item">
+                        <div class="result-name">{{ food.name }}</div>
+                        <div class="result-count">{{ food.times_ordered }} orders</div>
+                    </div>
+                    {% endfor %}
+                {% elif search_query %}
+                    <div class="no-results">
+                        No food items found for "{{ search_query }}"<br>
+                        <small>Try searching for something else</small>
+                    </div>
+                {% else %}
+                    <div class="no-results">
+                        Enter a search term to find food items
+                    </div>
+                {% endif %}
+            </div>
+        </div>
+    </div>
+</body>
+</html>

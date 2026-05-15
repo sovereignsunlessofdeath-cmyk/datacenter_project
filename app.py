@@ -32,6 +32,37 @@ def save_data(data):
     with open(DATA_FILE, 'w') as f:
         json.dump(data, f, indent=4)
 
+# Search and rank food by popularity
+def search_and_rank_food(data, search_term):
+    """
+    Search for food items and rank by popularity (most ordered first)
+    """
+    search_term = search_term.lower().strip()
+    
+    if not search_term:
+        return []
+    
+    # Count how many times each food was ordered
+    food_count = {}
+    for orders in data["orders"].values():
+        for order in orders:
+            food = order["food"]
+            food_count[food] = food_count.get(food, 0) + 1
+    
+    # Find matching foods
+    matching_foods = []
+    for food in data["menu"]:
+        if search_term in food.lower():
+            matching_foods.append({
+                "name": food,
+                "times_ordered": food_count.get(food, 0)
+            })
+    
+    # Sort by times ordered (most popular first)
+    matching_foods.sort(key=lambda x: x["times_ordered"], reverse=True)
+    
+    return matching_foods
+
 # ============== LOGIN ROUTES ==============
 
 @app.route('/')
@@ -142,6 +173,25 @@ def order_history():
     data = load_data()
     orders = data["orders"]
     return render_template('order_history.html', orders=orders, username=session.get('user'))
+
+@app.route('/search_food', methods=['GET', 'POST'])
+def search_food():
+    if 'user' not in session:
+        return redirect(url_for('login_staff'))
+    
+    data = load_data()
+    search_results = []
+    search_query = ""
+    
+    if request.method == 'POST':
+        search_query = request.form.get('search_query', '').strip()
+        if search_query:
+            search_results = search_and_rank_food(data, search_query)
+    
+    return render_template('search_food.html', 
+                           results=search_results, 
+                           search_query=search_query,
+                           username=session.get('user'))
 
 # ============== STAFF TICKET SUBMISSION ==============
 
