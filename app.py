@@ -314,7 +314,7 @@ def respond_ticket(ticket_id):
             save_data(data)
             
             # Send email notification
-            staff_email = ticket['name'] + '@company.com'
+            staff_email = ticket['name'].lower().replace(' ', '.') + '@company.com'
             send_ticket_response_email(staff_email, ticket_id, new_status, response_message)
             
             return redirect(url_for('tickets'))
