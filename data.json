@@ -1,9 +1,9 @@
 {
     "staff": [
-        {"name": "Damilare", "email": "oluwadamilareoshodi@gmail.com"},
-        {"name": "Bolu", "email": ""},
-        {"name": "Mr Kc", "email": ""},
-        {"name": "Johnpaul", "email": ""}
+        {"name": "damilare", "email": "oluwadamilareoshodi@gmail.com"},
+        {"name": "bolu", "email": ""},
+        {"name": "mr Kc", "email": ""},
+        {"name": "johnpaul", "email": ""}
         
     ],
     "menu": [
