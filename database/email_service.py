@@ -1,27 +1,53 @@
-import os
 import smtplib
 from email.mime.text import MIMEText
+from email.mime.multipart import MIMEMultipart
+from config import Config
 
-def send_ticket_response_email(to_email, ticket_id, status, response_message):
-    # This reads the keys directly from your Render environment setup
-    sender_email = os.environ.get('EMAIL_ADDRESS')
-    sender_password = os.environ.get('EMAIL_PASSWORD')
-    
-    # Constructing the raw email details
-    subject = f"IT Ticket #{ticket_id} Update"
-    body = f"Hello,\n\nYour ticket status has been updated to: {status}.\n\nAdmin Message:\n{response_message}\n\nBest regards,\nIT Support Team"
-    
-    msg = MIMEText(body)
-    msg['Subject'] = subject
-    msg['From'] = sender_email
-    msg['To'] = to_email
-
+def send_ticket_response_email(staff_email, ticket_id, status, response_message):
+    """
+    Send email notification when ticket is responded to
+    """
     try:
-        # Standard Gmail secure connection configurations
-        with smtplib.SMTP('smtp.gmail.com', 587) as server:
-            server.starttls() # Secure connection layer
-            server.login(sender_email, sender_password)
-            server.sendmail(sender_email, to_email, msg.as_string())
-            print(f"SUCCESS: Notification email sent to {to_email}")
+        if not Config.EMAIL_ADDRESS or not Config.EMAIL_PASSWORD:
+            print("Email credentials not configured")
+            return False
+            
+        if not staff_email:
+            print("Staff email not provided")
+            return False
+        
+        subject = f"Ticket #{ticket_id} - Response from IT Team"
+        
+        body = f"""
+Hello,
+
+Your support ticket has been responded to.
+
+Ticket ID: #{ticket_id}
+Current Status: {status}
+
+Response from IT Team:
+{response_message}
+
+Please log back into the system to view more details.
+
+Best regards,
+Data Centre IT Team
+        """
+        
+        message = MIMEMultipart()
+        message['From'] = Config.EMAIL_ADDRESS
+        message['To'] = staff_email
+        message['Subject'] = subject
+        
+        message.attach(MIMEText(body, 'plain'))
+        
+        with smtplib.SMTP_SSL(Config.EMAIL_SMTP_SERVER, Config.EMAIL_SMTP_PORT) as server:
+            server.login(Config.EMAIL_ADDRESS, Config.EMAIL_PASSWORD)
+            server.send_message(message)
+        
+        print(f"Email sent to {staff_email}")
+        return True
     except Exception as e:
-        print(f"ERROR: Email failed to send. Reason: {e}")
+        print(f"Error sending email: {str(e)}")
+        return False
