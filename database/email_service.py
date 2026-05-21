@@ -8,6 +8,14 @@ def send_ticket_response_email(staff_email, ticket_id, status, response_message)
     Send email notification when ticket is responded to
     """
     try:
+        if not Config.EMAIL_ADDRESS or not Config.EMAIL_PASSWORD:
+            print("Email credentials not configured")
+            return False
+            
+        if not staff_email:
+            print("Staff email not provided")
+            return False
+        
         subject = f"Ticket #{ticket_id} - Response from IT Team"
         
         body = f"""
@@ -38,6 +46,7 @@ Data Centre IT Team
             server.login(Config.EMAIL_ADDRESS, Config.EMAIL_PASSWORD)
             server.send_message(message)
         
+        print(f"Email sent to {staff_email}")
         return True
     except Exception as e:
         print(f"Error sending email: {str(e)}")
