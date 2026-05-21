@@ -57,22 +57,22 @@ def respond_ticket(ticket_id):
         response_message = request.form.get('response_message', '').strip()
         new_status = request.form.get('status', ticket['status'])
         
-       if response_message:
+        if response_message:
             ticket['status'] = new_status
             if new_status == "Resolved":
                 ticket['date_resolved'] = str(datetime.now())
             
             save_data(data)
             
+            # Look up the staff member's profile details
             staff_member = get_staff_by_name(data, ticket['name'])
             
+            # Trigger the email process securely with a safety fallback catch
             if staff_member and staff_member['email']:
-                # The safety net block
                 try:
                     send_ticket_response_email(staff_member['email'], ticket_id, new_status, response_message)
                 except Exception as mail_error:
-                    # If Render blocks the email connection, it prints the error to the logs 
-                    # but skips crashing the app, so your user stays on a working webpage!
+                    # Logs the connection blocking issue to Render terminal but prevents a 500 webpage crash
                     print(f"Network email notification skipped: {mail_error}")
             
             return redirect(url_for('tickets.tickets'))
