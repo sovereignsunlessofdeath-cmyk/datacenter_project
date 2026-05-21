@@ -64,10 +64,8 @@ def respond_ticket(ticket_id):
             
             save_data(data)
             
-            # 1. Look up the staff member in data.json
             staff_member = get_staff_by_name(data, ticket['name'])
             
-            # 2. RUN THE EMAIL FUNCTION (No '#' keys here!)
             if staff_member and staff_member['email']:
                 send_ticket_response_email(staff_member['email'], ticket_id, new_status, response_message)
             
