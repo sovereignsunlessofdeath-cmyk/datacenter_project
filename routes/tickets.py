@@ -64,13 +64,14 @@ def respond_ticket(ticket_id):
             
             save_data(data)
             
-           # Send email notification (disabled for now)
-           # staff_member = get_staff_by_name(data, ticket['name'])
-           # if staff_member and staff_member['email']:
-           #     send_ticket_response_email(staff_member['email'], ticket_id, new_status, response_message)
+            # --- FIXED SECTION ---
+            # We fetch the staff member details here so the code below doesn't crash
+            staff_member = get_staff_by_name(data, ticket['name'])
             
-            if staff_member and staff_member['email']:
-                send_ticket_response_email(staff_member['email'], ticket_id, new_status, response_message)
+            # If you want to completely disable email sending, leave these lines commented out:
+            # if staff_member and staff_member['email']:
+            #     send_ticket_response_email(staff_member['email'], ticket_id, new_status, response_message)
+            # ---------------------
             
             return redirect(url_for('tickets.tickets'))
     
