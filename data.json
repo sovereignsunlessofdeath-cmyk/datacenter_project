@@ -1,6 +1,10 @@
 {
     "staff": [
-        "Damilare", "Bolu", "John Paul", "Mr Kc"
+        {"name": "Damilare", "email": ""},
+        {"name": "Bolu", "email": ""},
+        {"name": "Mr Kc", "email": ""},
+        {"name": "Johnpaul", "email": ""}
+        
     ],
     "menu": [
         "Rice"

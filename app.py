@@ -138,21 +138,70 @@ def login_admin():
 def login_staff():
     data = load_data()
     if request.method == 'POST':
-        staff_name = request.form['staff_name']
+        staff_name = request.form['staff_name'].strip()
         
-        if staff_name in data['staff']:
+        # Check if staff exists in the new format
+        staff_member = None
+        for staff in data['staff']:
+            if staff['name'] == staff_name:
+                staff_member = staff
+                break
+        
+        if staff_member:
             session['user'] = staff_name
             session['role'] = 'staff'
+            
+            # If email is empty, redirect to profile to add email
+            if not staff_member['email']:
+                return redirect(url_for('profile'))
+            
             return redirect(url_for('order'))
         else:
-            return render_template('login_staff.html', staff=data['staff'], error='Staff name not found')
+            staff_names = [s['name'] for s in data['staff']]
+            return render_template('login_staff.html', staff=staff_names, error='Staff name not found')
     
-    return render_template('login_staff.html', staff=data['staff'])
+    staff_names = [s['name'] for s in data['staff']]
+    return render_template('login_staff.html', staff=staff_names)
 
 @app.route('/logout')
 def logout():
     session.clear()
     return redirect(url_for('index'))
+
+# ============== PROFILE ROUTE ==============
+
+@app.route('/profile', methods=['GET', 'POST'])
+def profile():
+    if 'user' not in session or session.get('role') != 'staff':
+        return redirect(url_for('login_staff'))
+    
+    data = load_data()
+    staff_member = None
+    
+    for staff in data['staff']:
+        if staff['name'] == session.get('user'):
+            staff_member = staff
+            break
+    
+    if not staff_member:
+        return redirect(url_for('login_staff'))
+    
+    if request.method == 'POST':
+        email = request.form.get('email', '').strip()
+        
+        if email:
+            staff_member['email'] = email
+            save_data(data)
+            return redirect(url_for('order'))
+        else:
+            return render_template('profile.html', 
+                                   staff_name=session.get('user'),
+                                   email=staff_member['email'],
+                                   error='Email cannot be empty')
+    
+    return render_template('profile.html', 
+                           staff_name=session.get('user'),
+                           email=staff_member['email'])
 
 # ============== ADMIN DASHBOARD ==============
 
@@ -313,9 +362,15 @@ def respond_ticket(ticket_id):
             
             save_data(data)
             
-            # Send email notification
-            staff_email = ticket['name'].lower().replace(' ', '.') + '@company.com'
-            send_ticket_response_email(staff_email, ticket_id, new_status, response_message)
+            # Send email notification using saved email from staff list
+            staff_email = None
+            for staff in data['staff']:
+                if staff['name'] == ticket['name']:
+                    staff_email = staff['email']
+                    break
+            
+            if staff_email:
+                send_ticket_response_email(staff_email, ticket_id, new_status, response_message)
             
             return redirect(url_for('tickets'))
     
@@ -353,8 +408,9 @@ def settings():
         return redirect(url_for('login_admin'))
     
     data = load_data()
+    staff_names = [s['name'] for s in data["staff"]]
     return render_template('settings.html', 
-                           staff=data["staff"], 
+                           staff=staff_names, 
                            menu=data["menu"],
                            categories=data["ticket_categories"],
                            username=session.get('user'))
@@ -366,8 +422,11 @@ def add_staff():
     
     data = load_data()
     name = request.form['staff_name'].strip()
-    if name and name not in data["staff"]:
-        data["staff"].append(name)
+    
+    staff_exists = any(s['name'] == name for s in data["staff"])
+    
+    if name and not staff_exists:
+        data["staff"].append({"name": name, "email": ""})
     save_data(data)
     return redirect(url_for('settings'))
 
@@ -377,8 +436,7 @@ def remove_staff(name):
         return redirect(url_for('login_admin'))
     
     data = load_data()
-    if name in data["staff"]:
-        data["staff"].remove(name)
+    data["staff"] = [s for s in data["staff"] if s['name'] != name]
     save_data(data)
     return redirect(url_for('settings'))
 

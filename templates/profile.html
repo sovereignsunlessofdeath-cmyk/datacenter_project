@@ -1,8 +1,8 @@
- <!DOCTYPE html>
+<!DOCTYPE html>
 <html>
 <head>
     <meta charset="UTF-8">
-    <title>Respond to Ticket</title>
+    <title>Complete Your Profile</title>
     <style>
         * { margin: 0; padding: 0; box-sizing: border-box; }
         body { 
@@ -14,7 +14,7 @@
             justify-content: center;
             align-items: center;
         }
-        .container { max-width: 600px; width: 100%; }
+        .container { max-width: 500px; width: 100%; }
         .card { 
             background: white; 
             padding: 40px; 
@@ -23,22 +23,24 @@
         }
         h1 { 
             color: #667eea;
-            margin-bottom: 30px;
+            margin-bottom: 10px;
+            font-size: 28px;
             text-align: center;
         }
-        .ticket-info {
+        .subtitle {
+            text-align: center;
+            color: #999;
+            margin-bottom: 30px;
+            font-size: 14px;
+        }
+        .user-info {
             background: #f0f4ff;
             padding: 15px;
             border-radius: 8px;
             margin-bottom: 25px;
-            border-left: 4px solid #667eea;
-        }
-        .ticket-detail {
-            margin-bottom: 10px;
-            color: #2c3e50;
-        }
-        .ticket-detail strong {
+            text-align: center;
             color: #667eea;
+            font-weight: 600;
         }
         .form-group { 
             margin-bottom: 20px;
@@ -50,7 +52,7 @@
             font-weight: 600;
             font-size: 14px;
         }
-        input, select, textarea { 
+        input { 
             width: 100%;
             padding: 12px;
             border: 2px solid #e0e0e0;
@@ -59,7 +61,7 @@
             transition: border-color 0.3s ease;
             font-family: inherit;
         }
-        input:focus, select:focus, textarea:focus { 
+        input:focus { 
             outline: none;
             border-color: #667eea;
             box-shadow: 0 0 0 3px rgba(102, 126, 234, 0.1);
@@ -80,52 +82,50 @@
             transform: translateY(-2px);
             box-shadow: 0 10px 25px rgba(102, 126, 234, 0.3);
         }
-        .back-link {
+        .help-text {
             text-align: center;
+            color: #999;
+            font-size: 12px;
             margin-top: 20px;
+            line-height: 1.6;
         }
-        .back-link a {
-            color: #667eea;
-            text-decoration: none;
-            font-weight: 600;
+        .error {
+            background: rgb(242, 222, 222);
+            color: rgb(169, 68, 66);
+            padding: 12px;
+            border-radius: 8px;
+            margin-bottom: 20px;
+            border-left: 4px solid rgb(231, 76, 60);
         }
     </style>
 </head>
 <body>
     <div class="container">
         <div class="card">
-            <h1>Respond to Ticket</h1>
+            <h1>👤 Complete Your Profile</h1>
+            <p class="subtitle">Add your email to receive ticket responses</p>
             
-            <div class="ticket-info">
-                <div class="ticket-detail"><strong>Ticket ID:</strong> #{{ ticket.id }}</div>
-                <div class="ticket-detail"><strong>From:</strong> {{ ticket.name }}</div>
-                <div class="ticket-detail"><strong>Department:</strong> {{ ticket.department }}</div>
-                <div class="ticket-detail"><strong>Category:</strong> {{ ticket.category }}</div>
-                <div class="ticket-detail"><strong>Current Status:</strong> {{ ticket.status }}</div>
-                <div class="ticket-detail"><strong>Issue:</strong> {{ ticket.description }}</div>
+            <div class="user-info">
+                Staff: <strong>{{ staff_name }}</strong>
             </div>
 
-            <form action="/respond_ticket/{{ ticket.id }}" method="POST">
+            {% if error %}
+            <div class="error">{{ error }}</div>
+            {% endif %}
+
+            <form action="/profile" method="POST">
                 <div class="form-group">
-                    <label for="status">Update Status</label>
-                    <select id="status" name="status" required>
-                        <option value="Open" {% if ticket.status == 'Open' %}selected{% endif %}>Open</option>
-                        <option value="In Progress" {% if ticket.status == 'In Progress' %}selected{% endif %}>In Progress</option>
-                        <option value="Resolved" {% if ticket.status == 'Resolved' %}selected{% endif %}>Resolved</option>
-                    </select>
+                    <label for="email">Your Email *</label>
+                    <input type="email" id="email" name="email" placeholder="Enter your email address" value="{{ email }}" required>
                 </div>
 
-                <div class="form-group">
-                    <label for="response_message">Your Response</label>
-                    <textarea id="response_message" name="response_message" placeholder="Type your response to send to the staff member..." rows="6" required></textarea>
-                </div>
-
-                <button type="submit">Send Response & Email</button>
+                <button type="submit">✓ Save Email & Continue</button>
             </form>
 
-            <div class="back-link">
-                <a href="/tickets">← Back to Tickets</a>
-            </div>
+            <p class="help-text">
+                Your email will be used to send you notifications<br>
+                when IT staff responds to your support tickets.
+            </p>
         </div>
     </div>
 </body>
