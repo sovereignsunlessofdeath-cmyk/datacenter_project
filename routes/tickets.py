@@ -64,8 +64,10 @@ def respond_ticket(ticket_id):
             
             save_data(data)
             
-            # Send email notification using saved email from staff list
-            staff_member = get_staff_by_name(data, ticket['name'])
+           # Send email notification (disabled for now)
+           # staff_member = get_staff_by_name(data, ticket['name'])
+           # if staff_member and staff_member['email']:
+           #     send_ticket_response_email(staff_member['email'], ticket_id, new_status, response_message)
             
             if staff_member and staff_member['email']:
                 send_ticket_response_email(staff_member['email'], ticket_id, new_status, response_message)
