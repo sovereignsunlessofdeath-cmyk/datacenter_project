@@ -1,8 +1,10 @@
 from flask import Blueprint, render_template, request, redirect, url_for, session
 from datetime import datetime
-from database.db import load_data, save_data, get_ticket_by_id, get_staff_by_name
-from database.models import create_ticket
-from database.email_service import send_ticket_response_email
+
+# We add 'datacenter_project.' to the front so Python knows exactly which folder to look inside!
+from datacenter_project.database.db import load_data, save_data, get_ticket_by_id, get_staff_by_name
+from datacenter_project.database.models import create_ticket
+from datacenter_project.database.email_service import send_ticket_response_email
 
 bp = Blueprint('tickets', __name__)
 
@@ -57,6 +59,10 @@ def respond_ticket(ticket_id):
         response_message = request.form.get('response_message', '').strip()
         new_status = request.form.get('status', ticket['status'])
         
+  if request.method == 'POST':
+        response_message = request.form.get('response_message', '').strip()
+        new_status = request.form.get('status', ticket['status'])
+        
         if response_message:
             ticket['status'] = new_status
             if new_status == "Resolved":
@@ -64,15 +70,12 @@ def respond_ticket(ticket_id):
             
             save_data(data)
             
-            # Look up the staff member's profile details
             staff_member = get_staff_by_name(data, ticket['name'])
             
-            # Trigger the email process securely with a safety fallback catch
             if staff_member and staff_member['email']:
                 try:
                     send_ticket_response_email(staff_member['email'], ticket_id, new_status, response_message)
                 except Exception as mail_error:
-                    # Logs the connection blocking issue to Render terminal but prevents a 500 webpage crash
                     print(f"Network email notification skipped: {mail_error}")
             
             return redirect(url_for('tickets.tickets'))
