@@ -1,10 +1,10 @@
 from flask import Blueprint, render_template, request, redirect, url_for, session
 from datetime import datetime
 
-# We add 'datacenter_project.' to the front so Python knows exactly which folder to look inside!
-from datacenter_project.database.db import load_data, save_data, get_ticket_by_id, get_staff_by_name
-from datacenter_project.database.models import create_ticket
-from datacenter_project.database.email_service import send_ticket_response_email
+# Fixed path address styles - no more missing import lines!
+from ..database.db import load_data, save_data, get_ticket_by_id, get_staff_by_name
+from ..database.models import create_ticket
+from ..database.email_service import send_ticket_response_email
 
 bp = Blueprint('tickets', __name__)
 
@@ -59,10 +59,6 @@ def respond_ticket(ticket_id):
         response_message = request.form.get('response_message', '').strip()
         new_status = request.form.get('status', ticket['status'])
         
-  if request.method == 'POST':
-        response_message = request.form.get('response_message', '').strip()
-        new_status = request.form.get('status', ticket['status'])
-        
         if response_message:
             ticket['status'] = new_status
             if new_status == "Resolved":
@@ -73,9 +69,11 @@ def respond_ticket(ticket_id):
             staff_member = get_staff_by_name(data, ticket['name'])
             
             if staff_member and staff_member['email']:
+                # The safety net block catching Render's network blocks
                 try:
                     send_ticket_response_email(staff_member['email'], ticket_id, new_status, response_message)
                 except Exception as mail_error:
+                    # Keeps the web app running even if the cloud server blocks email ports
                     print(f"Network email notification skipped: {mail_error}")
             
             return redirect(url_for('tickets.tickets'))
