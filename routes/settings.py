@@ -1,5 +1,6 @@
 from flask import Blueprint, render_template, request, redirect, url_for, session
 from database.db import load_data, save_data
+from database.models import create_staff
 
 bp = Blueprint('settings', __name__)
 

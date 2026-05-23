@@ -1,8 +1,5 @@
-from database.db import load_data, save_data, get_ticket_by_id, get_staff_by_name
-from database.models import create_ticket
-from database.email_service import send_ticket_response_email
-
-# Points directly to the database folder at the root level
+from flask import Blueprint, render_template, request, redirect, url_for, session
+from datetime import datetime
 from database.db import load_data, save_data, get_ticket_by_id, get_staff_by_name
 from database.models import create_ticket
 from database.email_service import send_ticket_response_email
@@ -67,14 +64,15 @@ def respond_ticket(ticket_id):
             
             save_data(data)
             
+            # Look up the staff member's profile details
             staff_member = get_staff_by_name(data, ticket['name'])
             
+            # Trigger the email process securely with a safety fallback catch
             if staff_member and staff_member['email']:
-                # The safety net block catching Render's network blocks
                 try:
                     send_ticket_response_email(staff_member['email'], ticket_id, new_status, response_message)
                 except Exception as mail_error:
-                    # Keeps the web app running even if the cloud server blocks email ports
+                    # Logs the connection blocking issue to Render terminal but prevents a 500 webpage crash
                     print(f"Network email notification skipped: {mail_error}")
             
             return redirect(url_for('tickets.tickets'))

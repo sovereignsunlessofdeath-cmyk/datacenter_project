@@ -1,5 +1,6 @@
 from flask import Blueprint, render_template, request, redirect, url_for, session
-from database.db import load_data, save_data
+from config import Config
+from database.db import load_data, save_data, get_staff_by_name
 
 bp = Blueprint('auth', __name__)
 
@@ -28,7 +29,7 @@ def login_staff():
     if request.method == 'POST':
         staff_name = request.form['staff_name'].strip()
         
-        # Check if staff exists in the new format
+        # Check if staff exists in the database
         staff_member = get_staff_by_name(data, staff_name)
         
         if staff_member:
@@ -36,15 +37,16 @@ def login_staff():
             session['role'] = 'staff'
             
             # If email is empty, redirect to profile to add email
-            if not staff_member['email']:
+            if not staff_member.get('email'):
                 return redirect(url_for('orders.profile'))
             
-            return redirect(url_for('orders.order'))
+            # Updated to 'order_food' to perfectly match your blueprint target function
+            return redirect(url_for('orders.order_food'))
         else:
-            staff_names = [s['name'] for s in data['staff']]
+            staff_names = [s['name'] for s in data.get('staff', [])]
             return render_template('login_staff.html', staff=staff_names, error='Staff name not found')
     
-    staff_names = [s['name'] for s in data['staff']]
+    staff_names = [s['name'] for s in data.get('staff', [])]
     return render_template('login_staff.html', staff=staff_names)
 
 @bp.route('/logout')

@@ -1,4 +1,5 @@
 from flask import Blueprint, render_template, request, redirect, url_for, session
+from datetime import date, timedelta
 from database.db import load_data, save_data
 
 bp = Blueprint('admin', __name__)
@@ -10,12 +11,14 @@ def admin_dashboard():
     
     data = load_data()
     tomorrow = str(date.today() + timedelta(days=1))
-    tomorrow_orders = data["orders"].get(tomorrow, [])
-    staff_names = [s['name'] for s in data["staff"]]
+    
+    # Safely fetches tomorrow's orders out of the data object
+    tomorrow_orders = data.get("orders", {}).get(tomorrow, [])
+    staff_names = [s['name'] for s in data.get("staff", [])]
     
     return render_template('admin.html', 
                            orders=tomorrow_orders, 
                            staff=staff_names, 
-                           menu=data["menu"], 
+                           menu=data.get("menu", []), 
                            tomorrow=tomorrow,
                            username=session.get('user'))
