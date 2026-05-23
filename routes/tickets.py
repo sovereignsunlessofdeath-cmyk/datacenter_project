@@ -1,10 +1,10 @@
 from flask import Blueprint, render_template, request, redirect, url_for, session
 from datetime import datetime
 
-# Fixed path address styles - no more missing import lines!
-from ..database.db import load_data, save_data, get_ticket_by_id, get_staff_by_name
-from ..database.models import create_ticket
-from ..database.email_service import send_ticket_response_email
+# Switch from dots back to explicit absolute folder paths
+from database.db import load_data, save_data, get_ticket_by_id, get_staff_by_name
+from database.models import create_ticket
+from database.email_service import send_ticket_response_email
 
 bp = Blueprint('tickets', __name__)
 
