@@ -1,7 +1,5 @@
 from flask import Blueprint, render_template, request, redirect, url_for, session
-from datetime import date, timedelta
-from database.db import load_data, save_data, get_staff_by_name
-from database.models import create_order
+from database.db import load_data, save_data
 
 bp = Blueprint('orders', __name__)
 
