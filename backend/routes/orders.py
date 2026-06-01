@@ -34,7 +34,7 @@ def profile():
 
 @bp.route('/order')
 @login_required  # Handled automatically at the door
-def order():
+def order_food():
     data = load_data()
     tomorrow = str(date.today() + timedelta(days=1))
     return render_template('order.html',
