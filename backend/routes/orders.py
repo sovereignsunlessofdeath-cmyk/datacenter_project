@@ -2,23 +2,22 @@ from flask import Blueprint, render_template, request, redirect, url_for, sessio
 from datetime import date, timedelta
 from database.db import load_data, save_data, get_staff_by_name
 from database.models import create_order
+from backend.middleware.auth_guard import login_required, admin_required
 
 bp = Blueprint('orders', __name__)
 
 @bp.route('/profile', methods=['GET', 'POST'])
+@login_required  # Middleware replaces manual 'user' in session check
 def profile():
-    if 'user' not in session or session.get('role') != 'staff':
-        return redirect(url_for('auth.login_staff'))
-    
     data = load_data()
     staff_member = get_staff_by_name(data, session.get('user'))
     
-    if not staff_member:
+    # Extra role guard specific to staff profiles
+    if session.get('role') != 'staff' or not staff_member:
         return redirect(url_for('auth.login_staff'))
     
     if request.method == 'POST':
         email = request.form.get('email', '').strip()
-        
         if email:
             staff_member['email'] = email
             save_data(data)
@@ -34,10 +33,8 @@ def profile():
                            email=staff_member['email'])
 
 @bp.route('/order')
+@login_required  # Handled automatically at the door
 def order():
-    if 'user' not in session:
-        return redirect(url_for('auth.login_staff'))
-    
     data = load_data()
     tomorrow = str(date.today() + timedelta(days=1))
     return render_template('order.html',
@@ -46,10 +43,8 @@ def order():
                            username=session.get('user'))
 
 @bp.route('/submit_order', methods=['POST'])
+@login_required  # Handled automatically at the door
 def submit_order():
-    if 'user' not in session:
-        return redirect(url_for('auth.login_staff'))
-    
     data = load_data()
     tomorrow = str(date.today() + timedelta(days=1))
     staff_name = session.get('user')
@@ -73,19 +68,15 @@ def order_confirmation():
     return render_template('confirmation.html')
 
 @bp.route('/order_history')
+@admin_required  # Locks down history route entirely to admins
 def order_history():
-    if 'user' not in session or session.get('role') != 'admin':
-        return redirect(url_for('auth.login_admin'))
-    
     data = load_data()
     orders = data["orders"]
     return render_template('order_history.html', orders=orders, username=session.get('user'))
 
 @bp.route('/search_food', methods=['GET', 'POST'])
+@login_required  # Handled automatically at the door
 def search_food():
-    if 'user' not in session:
-        return redirect(url_for('auth.login_staff'))
-    
     data = load_data()
     search_results = []
     search_query = ""
@@ -101,20 +92,17 @@ def search_food():
                            username=session.get('user'))
 
 def search_and_rank_food(data, search_term):
-    """Search for food items and rank by popularity"""
+    """Utility function to search for food items and rank by popularity"""
     search_term = search_term.lower().strip()
-    
     if not search_term:
         return []
     
-    # Count how many times each food was ordered
     food_count = {}
     for orders in data["orders"].values():
         for order in orders:
             food = order["food"]
             food_count[food] = food_count.get(food, 0) + 1
     
-    # Find matching foods
     matching_foods = []
     for food in data["menu"]:
         if search_term in food.lower():
@@ -123,7 +111,5 @@ def search_and_rank_food(data, search_term):
                 "times_ordered": food_count.get(food, 0)
             })
     
-    # Sort by times ordered (most popular first)
     matching_foods.sort(key=lambda x: x["times_ordered"], reverse=True)
-    
     return matching_foods

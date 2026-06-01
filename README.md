@@ -21,37 +21,41 @@ A web-based application for managing food orders and IT support tickets at a dat
 - Profile management for staff
 
 ## Project Structure
-datacenter_project/
-├── app.py                    # Main Flask application
-├── config.py                 # Configuration settings
-├── requirements.txt          # Python dependencies
-├── data.json                 # Database (JSON)
-│
-├── database/                 # Database layer
-│   ├── db.py                # Database functions
-│   ├── models.py            # Data models
-│   └── email_service.py      # Email sending service
-│
-├── routes/                   # Route handlers
-│   ├── auth.py              # Login/logout routes
-│   ├── orders.py            # Food order routes
-│   ├── tickets.py           # IT ticket routes
-│   ├── admin.py             # Admin dashboard
-│   └── settings.py          # Settings management
-│
-└── templates/               # HTML templates
-├── index.html
-├── login_admin.html
-├── login_staff.html
-├── order.html
-├── profile.html
-├── submit_ticket.html
-├── respond_ticket.html
-├── tickets.html
-├── admin.html
-├── settings.html
-└── ... (other templates)
 
+datacenter_project/
+│
+├── config.py                 # Central environment and application configurations
+├── requirements.txt          # Python dependencies
+├── wsgi.py                   # Production gateway entry point for Render (Gunicorn)
+│
+├── backend/                  # --- BACKEND CORE LAYER ---
+│   ├── __init__.py           # Initializes the Flask app & registers blueprints
+│   │
+│   ├── routes/               # --- CONTROLLERS / ROUTING LAYER ---
+│   │   ├── auth.py           # Login/logout routes
+│   │   ├── orders.py         # Food order routes
+│   │   ├── tickets.py        # IT ticket routes
+│   │   ├── admin.py          # Admin dashboard core
+│   │   └── settings.py       # Settings and system management
+│   │
+│   └── services/             # --- SERVICE LAYER ---
+│       └── email_service.py  # SMTP email transmission worker logic
+│
+├── database/                 # --- DATA PERSISTENCE LAYER ---
+│   ├── data.json             # Flat-file database storage 
+│   ├── db.py                 # Core file read/write logic (load_data, save_data)
+│   └── models.py             # Data constructors (create_ticket, create_order)
+│
+└── frontend/                 # --- FRONTEND PRESENTATION LAYER ---
+    ├── static/               # Browser assets (CSS, UI Images, JS scripts)
+    │   ├── css/
+    │   └── js/
+    └── templates/            # Clean UI view templates
+        ├── index.html
+        ├── login_admin.html
+        ├── login_staff.html
+        └── ...
+        
 ## Technologies Used
 
 - **Backend:** Python, Flask
