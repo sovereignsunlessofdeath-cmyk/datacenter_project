@@ -41,7 +41,7 @@ def login_staff():
                 return redirect(url_for('orders.profile'))
             
             # Redirecting to 'orders.order' to perfectly match your blueprint target function
-            return redirect(url_for('orders.order'))
+            return redirect(url_for('orders.order_food'))
         else:
             staff_names = [s['name'] for s in data.get('staff', [])]
             return render_template('login_staff.html', staff=staff_names, error='Staff name not found')
