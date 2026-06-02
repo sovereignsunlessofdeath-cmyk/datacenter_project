@@ -5,15 +5,15 @@ load_dotenv()
 
 class Config:
     """Configuration settings for the application"""
-    SECRET_KEY = 'your_secret_key_change_this'
+    SECRET_KEY = os.getenv('SECRET_KEY', 'your_secret_key_change_this')
     DEBUG = True
     DATA_FILE = 'data.json'
     
-    # Email settings
-    EMAIL_ADDRESS = os.getenv('EMAIL_ADDRESS')
-    EMAIL_PASSWORD = os.getenv('EMAIL_PASSWORD')
+    # Email settings (Updated to match your Render Secrets perfectly!)
+    EMAIL_ADDRESS = os.getenv('SMTP_USER')
+    EMAIL_PASSWORD = os.getenv('SMTP_PASSWORD')
     EMAIL_SMTP_SERVER = 'smtp.gmail.com'
-    EMAIL_SMTP_PORT = 465
+    EMAIL_SMTP_PORT = 587  # Switched to 587 to match our secure background TLS setup
     
     # Admin credentials
     ADMIN_ACCOUNTS = {

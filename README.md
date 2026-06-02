@@ -1,151 +1,142 @@
-# Data Centre Management System
+# Data Centre Management System 🚀
 
-A web-based application for managing food orders and IT support tickets at a data centre.
+A comprehensive, web-based internal management portal built for managing daily food orders and IT support tickets at the **CitiData Centre** facility in Magboro, Ogun State. 
 
-## Features
+This system helps streamline facility operations by providing a lightweight interface for staff requests and an administrative hub for ticket management with automated background email communication.
 
-✅ **Food Order System**
-- Staff can order food for the next day
-- Search and filter menu items by popularity
-- Admin can view all orders and manage the menu
+---
 
-✅ **IT Helpdesk Ticketing System**
-- Staff submit support tickets for IT issues
-- Admin responds to tickets with email notifications
-- Track ticket status (Open → In Progress → Resolved)
-- Manage ticket categories
+## ✨ Features
 
-✅ **User Management**
-- Admin login with credentials
-- Staff login with name and email registration
-- Profile management for staff
+### 🍔 Food Order System
+* **Pre-ordering Infrastructure:** Staff can submit food orders efficiently for the following work day.
+* **Menu Discovery:** Search and filter active menu options by popularity indicators.
+* **Kitchen Dashboard:** Administrators can view aggregated daily order reports and real-time menu availability controls.
 
-## Project Structure
+### 🎫 IT Helpdesk Ticketing System
+* **Issue Submission:** Staff can log operational IT or facility tickets with varying categories.
+* **Non-Blocking Notifications:** When administrators resolve or update a ticket, an asynchronous, threaded email process uses a secure connection (TLS Port 587) to send updates straight to the staff member's inbox instantly without locking up the user interface.
+* **State Tracking:** Track ticket workflows seamlessly from `Open` ➔ `In Progress` ➔ `Resolved`.
 
+### 👥 User & Profile Management
+* **Dual-Authentication Core:** Custom logic separating access layers for General Facility Staff vs. Authenticated Management Admins.
+* **Profile Syncing:** Staff register instantly via name and maintain up-to-date contact details via an interactive profile console.
+
+---
+
+## 📁 Project Structure
+
+```text
 datacenter_project/
 │
 ├── config.py                 # Central environment and application configurations
-├── requirements.txt          # Python dependencies
-├── wsgi.py                   # Production gateway entry point for Render (Gunicorn)
+├── requirements.txt          # Python application dependencies
+├── wsgi.py                   # Production gateway entry point for Gunicorn
 │
 ├── backend/                  # --- BACKEND CORE LAYER ---
 │   ├── __init__.py           # Initializes the Flask app & registers blueprints
 │   │
 │   ├── routes/               # --- CONTROLLERS / ROUTING LAYER ---
-│   │   ├── auth.py           # Login/logout routes
-│   │   ├── orders.py         # Food order routes
-│   │   ├── tickets.py        # IT ticket routes
-│   │   ├── admin.py          # Admin dashboard core
-│   │   └── settings.py       # Settings and system management
+│   │   ├── auth.py           # Login and logout authentication pipelines
+│   │   ├── orders.py         # Food order creation and processing routes
+│   │   ├── tickets.py        # IT ticket workflow lifecycle routes
+│   │   ├── admin.py          # Admin dashboard aggregator logic
+│   │   └── settings.py       # Settings and system management configurations
 │   │
 │   └── services/             # --- SERVICE LAYER ---
-│       └── email_service.py  # SMTP email transmission worker logic
+│       └── email_service.py  # Asynchronous non-blocking SMTP email pipeline
 │
 ├── database/                 # --- DATA PERSISTENCE LAYER ---
-│   ├── data.json             # Flat-file database storage 
-│   ├── db.py                 # Core file read/write logic (load_data, save_data)
-│   └── models.py             # Data constructors (create_ticket, create_order)
+│   ├── data.json             # Flat-file database storage engine
+│   ├── db.py                 # File I/O serialization logic (load_data/save_data)
+│   └── models.py             # Struct data constructors (create_ticket/create_order)
 │
 └── frontend/                 # --- FRONTEND PRESENTATION LAYER ---
-    ├── static/               # Browser assets (CSS, UI Images, JS scripts)
+    ├── static/               # Browser client assets (CSS, UI Images, JS scripts)
     │   ├── css/
     │   └── js/
-    └── templates/            # Clean UI view templates
+    └── templates/            # Clean UI Jinja2 view templates
         ├── index.html
         ├── login_admin.html
         ├── login_staff.html
         └── ...
-        
-## Technologies Used
 
-- **Backend:** Python, Flask
-- **Frontend:** HTML, CSS
-- **Database:** JSON (data.json)
-- **Email:** SMTP (Gmail)
-- **Deployment:** Render
+🛠️ Technologies Used
+Backend Engine: Python, 
+FlaskFrontend Design: HTML, CSS
+Database Ledger: Structured JSON Flat File (data.json)
+Transport Protocol: SMTP (Gmail Secure TLS Layer)
+Cloud Infrastructure: Render (Automated Delivery Web Worker)
 
-## Installation
+⚙️ Installation & Local Setup
+System Prerequisites
+Python 3.10+
+Flask 3.1.3
+Werkzeug 3.1.8
+python-dotenv
 
-### Requirements
-- Python 3.14.4+
-- Flask 3.1.3
-- Werkzeug 3.1.8
-- python-dotenv 1.0.0
+Step-by-Step Environment Run
+1. Clone the Repository:
 
-### Setup
+Bash
 
-1. **Clone the repository**
-```bash
-git clone https://github.com/sovereignsunlessofdeath-cmyk/datacenter_project.git
+git clone [https://github.com/sovereignsunlessofdeath-cmyk/datacenter_project.git](https://github.com/sovereignsunlessofdeath-cmyk/datacenter_project.git)
 cd datacenter_project
 
-Install dependencies
-pip install --break-system-packages -r requirements.txt
+2. Install Application Dependencies:
+Bashpip install -r requirements.txt
+(Note: Use pip install --break-system-packages -r requirements.txt if your operating system explicitly requires an external system flag).
 
-Create .env file
-EMAIL_ADDRESS=your_email@gmail.com
-EMAIL_PASSWORD=your_app_password
+3. Establish a Local Configuration File:
+Create a file named .env in the root directory of the project and insert your development credentials:
 
-Run the Application
-python app.py
+Plaintext
 
-Access the app
-Open browser: http://localhost:5000
-Admin login: Damilare@Citidata / Damilare
-Staff login: Any staff name (e.g., "Damilare")
-Admin Credentials
-Username
-Password
-Damilare@Citidata
-Damilare
-Mr Godwin@Admin
-Admin
-Mr Andie@Admin
-Admin
-Features Walkthrough
-Staff User
-Login → Enter name → Add email (first time only)
-Order Food → Search menu → Select food → Submit
-Submit Ticket → Describe issue → Submit
-Profile → Update email
-Admin User
-Dashboard → View tomorrow's orders
-Manage Staff → Add/remove staff members
-Manage Menu → Add/remove food items
-View Tickets → Respond to tickets → Send emails
-View Orders → History of all orders
-Email Notifications
-When admin responds to a ticket:
-Staff receives email with ticket response
-Email includes ticket ID, status, and response message
-Staff can then log in to view details
-Deployment
-The project is deployed on Render.com:
-Live URL: https://datacenter-project.onrender.com
-Auto-deployment: Pushes to GitHub automatically trigger redeploy
+SMTP_USER=your_email@gmail.com
+SMTP_PASSWORD=your_16_character_app_password
 
-Deploy Updates
+4. Execute the Application:
+
+Bash
+
+python config.py
+
+Open your browser and navigate to: http://localhost:5000
+
+🔐 Administrative Access Controls
+The following credentials grant full administrative authorization to the core control dashboards:
+Administrative Username      Password
+Damilare@Citidata            Damilare
+Mr Godwin@Admin              Admin
+Mr Andie@Admin               Admin
+
+🚀 Production Deployment on Render
+This portal is structured to run live inside a Render Web Service environment container.
+
+💼 Secure Secrets Management
+To prevent sensitive email accounts and application vectors from being checked into open source repositories on GitHub, the production app uses Render's Secret Files:
+1.Open your Render Dashboard and select your service.
+2.Go to the Environment tab on the left-hand menu.
+3.Click Create Secret File.
+4.Set the filename explicitly to .env.
+5.Paste your production variables inside the content section:
+
+Plaintext
+
+SMTP_USER=oluwadamilareoshodi@gmail.com
+SMTP_PASSWORD=xygvjsqazmqywmtv
+
+6. Click Save Changes. This instantly fires off a rolling, secure update.
+
+📦 Quick Version Control Deployment Flow
+Any changes pushed directly to your source control repository will automatically coordinate a fresh, updated container build on Render:
+
+Bash
+
 git add .
-git commit -m "Your message"
-git push origin main
-Wait 2-3 minutes for automatic deployment.
-
-Project Author
-Damilare - SIWES Intern at CitiData Centre
-Date Created
-May 2026
-Notes
-Data is stored in JSON format (suitable for small projects)
-For production, consider using a real database (PostgreSQL, MongoDB)
-Email requires Gmail App Password (not regular password)
-Free Render instance may have 50-second startup delay
-
-Last Updated: May 21, 2026
-Save this as `README.md` in your `datacenter_project` folder.
-
-Now push to Git:
-git add .
-git commit -m "Add comprehensive README documentation"
+git commit -m "doc: refine system readme architecture"
 git push origin main
 
-Done!
+📝 Authors & Project MetadataProject Author:
+
+ Damilare – SIWES Intern at CitiData CentreDevelopment Date: May 2026Database Note: Data persistence is structured on optimized flat JSON formatting suitable for facility prototyping. Future scaling operations can transition the data layer to a managed PostgreSQL cluster natively.
