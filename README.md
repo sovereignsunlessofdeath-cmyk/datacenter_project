@@ -1,6 +1,6 @@
 # Data Centre Management System 🚀
 
-A comprehensive, web-based internal management portal built for managing daily food orders and IT support tickets at the **CitiData Centre** facility in Magboro, Ogun State. 
+A comprehensive, web-based internal management portal built for managing daily food orders and IT support tickets at the **PetrodatCentre** facility in Magboro, Ogun State. 
 
 This system helps streamline facility operations by providing a lightweight interface for staff requests and an administrative hub for ticket management with automated background email communication.
 
