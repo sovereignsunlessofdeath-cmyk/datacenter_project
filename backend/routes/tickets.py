@@ -2,7 +2,7 @@ from flask import Blueprint, render_template, request, redirect, url_for, sessio
 from datetime import datetime
 from database.db import load_data, save_data, get_ticket_by_id, get_staff_by_name
 from database.models import create_ticket
-#from backend.services.email_service import send_ticket_response_email
+from backend.routes.email_service import send_ticket_response_email
 from backend.middleware.auth_guard import login_required, admin_required
 
 bp = Blueprint('tickets', __name__)
@@ -66,8 +66,7 @@ def respond_ticket(ticket_id):
             # Trigger our backend utility service to email the user safely
             if staff_member and staff_member.get('email'):
                 try:
-                    # Commented out until email_service module is built out
-                    # send_ticket_response_email(staff_member['email'], ticket_id, new_status, response_message)
+                    send_ticket_response_email(staff_member['email'], ticket_id, new_status, response_message)
                     pass
                 except Exception as mail_error:
                     print(f"Network email notification skipped: {mail_error}")
