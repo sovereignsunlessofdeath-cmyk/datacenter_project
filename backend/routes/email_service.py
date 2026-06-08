@@ -1,60 +1,51 @@
 import os
-import smtplib
 import threading
-from email.mime.text import MIMEText
-from email.mime.multipart import MIMEMultipart
+import resend
+
+# Initialize Resend using the Secret Key we set up on Render
+resend.api_key = os.environ.get("RESEND_API_KEY")
 
 def _send_email_worker(to_email, ticket_id, new_status, response_message):
     """
-    Internal background worker. This connects to Gmail's SMTP servers
-    and sends the update message directly to the staff member's email.
+    Background worker that connects to Resend's API over HTTP (Port 443).
+    Bypasses Render's firewall completely.
     """
-    sender_email = os.environ.get("SMTP_USER")
-    sender_password = os.environ.get("SMTP_PASSWORD")  # Must be a 16-character Gmail App Password
-
-    if not sender_email or not sender_password:
-        print("LOG: Email notification skipped. SMTP credentials are not configured in environment variables.")
+    if not resend.api_key:
+        print("LOG: Email notification skipped. RESEND_API_KEY is not configured.")
         return
 
-    # 1. Build the email headers
-    msg = MIMEMultipart()
-    msg['From'] = f"CitiData Helpdesk <{sender_email}>"
-    msg['To'] = to_email
-    msg['Subject'] = f"Update on your IT Support Ticket #{ticket_id} [{new_status}]"
+    # Crafting clean HTML body for the staff member's email
+    html_body = f"""
+    <h2>Hello,</h2>
+    <p>An IT Administrator has updated the status of your support ticket <strong>#{ticket_id}</strong>.</p>
+    <hr style="border: 1px solid #eee;" />
+    <p><strong>[Current Status]:</strong> <span style="color: #2b6cb0;">{new_status}</span></p>
+    <p><strong>[Admin Response]:</strong></p>
+    <blockquote style="background: #f7fafc; border-left: 4px solid #cbd5e0; padding: 10px; margin: 10px 0;">
+        {response_message}
+    </blockquote>
+    <hr style="border: 1px solid #eee;" />
+    <p>You can view full details by logging into the CitiData Center Portal.</p>
+    <br>
+    <p>Best regards,<br><strong>CitiData Centre IT Support Team</strong></p>
+    """
 
-    # 2. Craft the message body for the staff member
-    body = f"""Hello,
-
-An IT Administrator has updated the status of your support ticket #{ticket_id}.
-
---------------------------------------------------
-[Current Status]: {new_status}
-[Admin Response]:
-{response_message}
---------------------------------------------------
-
-You can view the full details of your request by logging into the CitiData Center Portal.
-
-Best regards,
-CitiData Centre IT Support Team
-"""
-    msg.attach(MIMEText(body, 'plain'))
-
-    # 3. Establish the secure connection to Gmail
     try:
-        print(f"Connecting to Gmail SSL to notify {to_email}...")
-        with smtplib.SMTP_SSL('smtp.gmail.com', 465, timeout=10) as server:
-            server.login(sender_email, sender_password)
-            server.sendmail(sender_email, to_email, msg.as_string())
-            print(f"SUCCESS: Notification email sent to staff member at: {to_email}")
+        print(f"Connecting to Resend API to notify {to_email}...")
+        resend.Emails.send({
+            "from": "CitiData Helpdesk <onboarding@resend.dev>",
+            "to": to_email,
+            "subject": f"Update on your IT Support Ticket #{ticket_id} [{new_status}]",
+            "html": html_body
+        })
+        print(f"SUCCESS: Notification email sent via Resend to: {to_email}")
     except Exception as e:
         print(f"ERROR: Background email delivery failed. Reason: {e}")
 
 
 def send_ticket_response_email(to_email, ticket_id, new_status, response_message):
     """
-    Call this function from your routes. It instantly spawns a background thread 
-    to send the email so your web page loads instantly without lag.
+    Spawns a clean background thread so the admin dashboard page loads instantly.
     """
     email_thread = threading.Thread(
         target=_send_email_worker,
