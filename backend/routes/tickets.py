@@ -2,7 +2,7 @@ from flask import Blueprint, render_template, request, redirect, url_for, sessio
 from datetime import datetime
 from database.db import load_data, save_data, get_ticket_by_id, get_staff_by_name
 from database.models import create_ticket
-from backend.routes.email_service import send_ticket_response_email
+from backend.services.email_service import send_ticket_response_email
 from backend.middleware.auth_guard import login_required, admin_required
 
 bp = Blueprint('tickets', __name__)
