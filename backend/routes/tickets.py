@@ -19,13 +19,22 @@ def submit_support_ticket():
 @login_required
 def submit_ticket():
     data = load_data()
+    
+    # 1. Capture the manually forced email address from the HTML form
+    user_email = request.form.get('user_email', '').strip()
+    
+    # 2. Generate the base ticket object using model blueprint logic
     ticket = create_ticket(
         request.form['name'],
         request.form['department'],
         request.form['category'],
         request.form['description']
     )
+    
+    # 3. Inject unique key attributes into the document store dictionary
     ticket['id'] = len(data["tickets"]) + 1
+    ticket['submitted_email'] = user_email  # Saves the manually provided email
+    
     data["tickets"].append(ticket)
     save_data(data)
     return redirect(url_for('tickets.submit_support_ticket'))
@@ -60,16 +69,20 @@ def respond_ticket(ticket_id):
             
             save_data(data)
             
-            # Fetch the staff member's email details
+            # 4. Fetch the staff fallback record if available
             staff_member = get_staff_by_name(data, ticket['name'])
             
+            # 5. Determine the best recipient email target (Preferring manual input)
+            recipient_email = ticket.get('submitted_email') or (staff_member.get('email') if staff_member else None)
+            
             # Trigger our backend utility service to email the user safely
-            if staff_member and staff_member.get('email'):
+            if recipient_email:
                 try:
-                    send_ticket_response_email(staff_member['email'], ticket_id, new_status, response_message)
-                    pass
+                    send_ticket_response_email(recipient_email, ticket_id, new_status, response_message)
                 except Exception as mail_error:
                     print(f"Network email notification skipped: {mail_error}")
+            else:
+                print(f"LOG: Could not send notification for Ticket #{ticket_id}. No valid target email found.")
             
             return redirect(url_for('tickets.tickets'))
     
