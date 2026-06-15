@@ -31,6 +31,7 @@
             display: flex;
             flex-wrap: wrap;
             gap: 15px;
+            align-items: center;
         }
         .nav a { 
             text-decoration: none; 
@@ -131,6 +132,13 @@
         <div class="nav">
             <a href="/order">Order Food</a>
             <a href="/submit_support_ticket">Submit Ticket</a>
+            
+            {% if session.get('role') == 'admin' %}
+            <a href="/tickets" style="background: rgba(102, 126, 234, 0.1); color: #764ba2; border: 1px dashed #667eea; font-weight: bold;">
+                🎫 Admin Tickets Dashboard
+            </a>
+            {% endif %}
+            
             <a href="/logout">Logout</a>
         </div>
 
@@ -155,3 +163,27 @@
                     <label for="department">Department</label>
                     <input type="text" id="department" name="department" placeholder="e.g. IT, Operations, Finance" required>
                 </div>
+
+                <div class="form-group">
+                    <label for="category">Issue Category</label>
+                    <select id="category" name="category" required>
+                        <option value="">-- Select Category --</option>
+                        {% for cat in categories %}
+                        <option value="{{ cat }}">{{ cat }}</option>
+                        {% endfor %}
+                    </select>
+                </div>
+
+                <div class="form-group">
+                    <label for="description">Describe Your Issue</label>
+                    <textarea id="description" name="description" placeholder="Provide details about your issue..." rows="5" required></textarea>
+                </div>
+
+                <button type="submit">Submit Ticket</button>
+            </form>
+
+            <a href="/logout" class="logout-btn">Logout</a>
+        </div>
+    </div>
+</body>
+</html>
