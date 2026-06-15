@@ -6,13 +6,12 @@ from email.mime.multipart import MIMEMultipart
 
 def _send_email_worker(to_email, ticket_id, new_status, response_message):
     """
-    Background worker that connects directly to Gmail's secure SMTP server.
-    Bypasses port restrictions when hosted on open-port environments like Railway.
+    Background worker that connects to Gmail via Port 587 using STARTTLS.
+    This bypasses Render's outbound firewall blocks on the Free Tier!
     """
     sender_email = os.environ.get("SMTP_USER")
     sender_password = os.environ.get("SMTP_PASSWORD")  # Your 16-character Gmail App Password
 
-    # Safety Check: If your Environment Variables aren't set, stop execution cleanly
     if not sender_email or not sender_password:
         print("LOG: Email notification skipped. SMTP credentials are missing from environment variables.")
         return
@@ -44,13 +43,17 @@ def _send_email_worker(to_email, ticket_id, new_status, response_message):
     """
     msg.attach(MIMEText(html_body, 'html'))
 
-    # 3. Connect to Google's Mail Servers via Secure SSL (Port 465)
+    # 3. Connect to Google's Mail Servers via STARTTLS (Port 587)
     try:
-        print(f"Connecting to Gmail SMTP to notify {to_email}...")
-        with smtplib.SMTP_SSL('smtp.gmail.com', 465, timeout=10) as server:
+        print(f"Connecting to Gmail via STARTTLS (Port 587) to notify {to_email}...")
+        
+        # Switch to standard SMTP + port 587
+        with smtplib.SMTP('smtp.gmail.com', 587, timeout=10) as server:
+            server.starttls()  # Upgrade the connection to secure encryption
             server.login(sender_email, sender_password)
             server.sendmail(sender_email, to_email, msg.as_string())
             print(f"SUCCESS: Notification email sent via Gmail to: {to_email}")
+            
     except Exception as e:
         print(f"ERROR: Background email delivery failed. Reason: {e}")
 
